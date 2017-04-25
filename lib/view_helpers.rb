@@ -8,10 +8,7 @@ module ViewHelpers
     File.exists?(File.dirname(__FILE__)+"/../views/#{path}.haml")
   end
 
-  def handle_search(term)
-    entities = Entity.search(term)
-    @investors = entities.select { |e| e.is_a?(Investor) }
-    @employees = entities.select { |e| e.is_a?(Employee) }
-    @startups = Startup.search(term).to_a
+  def is_logged_in?
+    !!session[:figo_token]
   end
 end

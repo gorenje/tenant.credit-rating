@@ -11,11 +11,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170413142245) do
+ActiveRecord::Schema.define(version: 20170425152022) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
+
+  create_table "accounts", force: :cascade do |t|
+    t.string   "figo_account_id"
+    t.string   "owner"
+    t.string   "name"
+    t.string   "account_number"
+    t.string   "currency"
+    t.string   "iban"
+    t.string   "account_type"
+    t.text     "icon_url"
+    t.decimal  "last_known_balance"
+    t.integer  "user_id"
+    t.integer  "bank_id"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "accounts", ["user_id", "figo_account_id"], name: "index_accounts_on_user_id_and_figo_account_id", using: :btree
+
+  create_table "banks", force: :cascade do |t|
+    t.string   "figo_bank_id"
+    t.string   "figo_bank_code"
+    t.string   "figo_bank_name"
+    t.string   "sepa_creditor_id"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "banks", ["figo_bank_id"], name: "index_banks_on_figo_bank_id", using: :btree
 
   create_table "entities", force: :cascade do |t|
     t.string   "name"
@@ -133,5 +162,41 @@ ActiveRecord::Schema.define(version: 20170413142245) do
 
   add_index "startups", ["founding_structure_id"], name: "index_startups_on_founding_structure_id", using: :btree
   add_index "startups", ["url"], name: "index_startups_on_url", using: :btree
+
+  create_table "transactions", force: :cascade do |t|
+    t.string   "figo_transaction_id"
+    t.string   "name"
+    t.decimal  "amount"
+    t.string   "currency"
+    t.datetime "booking_date"
+    t.datetime "value_date"
+    t.boolean  "booked"
+    t.text     "booking_text"
+    t.text     "purpose"
+    t.text     "transaction_type"
+    t.integer  "account_id"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
+  add_index "transactions", ["account_id", "figo_transaction_id"], name: "index_transactions_on_account_id_and_figo_transaction_id", using: :btree
+  add_index "transactions", ["figo_transaction_id"], name: "index_transactions_on_figo_transaction_id", using: :btree
+
+  create_table "users", force: :cascade do |t|
+    t.string   "email"
+    t.string   "name"
+    t.hstore   "address"
+    t.boolean  "email_verified"
+    t.string   "language"
+    t.datetime "join_date"
+    t.text     "access_token"
+    t.hstore   "last_import_attempt_status"
+    t.datetime "last_successful_import"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "users", ["email"], name: "index_users_on_email", using: :btree
+  add_index "users", ["last_successful_import"], name: "index_users_on_last_successful_import", using: :btree
 
 end
