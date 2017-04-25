@@ -1,7 +1,7 @@
 %section.bgc-grey.fxg-1.d-fx.fxjc-c
   .fxg-1.d-fx.fxw-nw.fxjc-s.fxac-s.max-w-1000px.fxd-v
     .w-100p.h-400px.m-5px.bs-1.brad-2px.bgc-white.p-5px.o-a
-      %table
+      %table.colorit.w-100p
         %tr
           %th Account Owner
           %td= @current_account.owner
@@ -20,7 +20,7 @@
             = @current_account.balance.balance
             = @current_account.currency
     .w-100p.h-400px.m-5px.bs-1.brad-2px.bgc-white.p-5px.o-a
-      %table
+      %table.colorit.w-100p
         %thead
           %tr
             %th Date
@@ -29,10 +29,10 @@
             %th Purpose
             %th.txa-r Amount
         %tbody
-          - (@transations || []).each do |transaction|
+          - (@transactions || []).each do |transaction|
             %tr
-              %td= transation.value_date
-              %td= transation.name
-              %td= transation.account_number
-              %td= transation.purpose
-              %td.txa-r= transation.amount
+              %td= transaction.value_date
+              %td= transaction.name
+              %td= transaction.account_number
+              %td= transaction.purpose
+              %td.txa-r{:class => transaction.amount < 0 ? "c-red" : "c-blue"}= transaction.amount
