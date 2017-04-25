@@ -1,2 +1,23 @@
+- total_score = 0
 %section.bgc-grey.fxg-1.d-fx.fxjc-c
-  Hi There.
+  .fxg-1.d-fx.fxw-nw.fxjc-s.fxac-s.max-w-1000px.fxd-v
+    .w-100p.h-400px.m-5px.bs-1.brad-2px.bgc-white.p-5px.o-a
+      %table.w-100p.colorit
+        %thead
+          %tr
+            %th.txa-l Factor
+            %th.txa-c Value
+            %th.txa-c Score
+        %tbody
+          - RatingFactors.each do |_,factor|
+            - val = factor[:proc].call(@user)
+            - total_score += val.last
+            %tr
+              %td
+                %span{:tooltip => factor[:desc] }= factor[:name]
+              %td.txa-c= val.first
+              %td.txa-c{:class => val.last < 0 ? "c-red" : "c-green"}= val.last
+          %tr
+            %td Total Score
+            %td
+            %td.txa-c{:class => total_score < 0 ? "c-red" : "c-green"}= total_score

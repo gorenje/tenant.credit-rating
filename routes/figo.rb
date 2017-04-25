@@ -9,14 +9,15 @@ get '/callback*' do
   end
 
   token_hash = $figo_connection.obtain_access_token(params['code'])
-  session[:figo_token] = token_hash['access_token']
 
-  User.find_or_create_user_by_figo(session[:figo_token])
+  session[:figo_token] = token_hash['access_token']
+  session[:user_id] = User.find_or_create_user_by_figo(session[:figo_token]).id
 
   redirect "/accounts"
 end
 
 get '/logout' do
+  session.delete(:user_id)
   session.delete(:figo_token)
   redirect '/'
 end
