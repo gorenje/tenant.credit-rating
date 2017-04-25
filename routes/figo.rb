@@ -1,4 +1,5 @@
 get '/figo/login' do
+  puts "Redirecting to: #{$figo_connection.login_url("qweqwe")}"
   redirect $figo_connection.login_url("qweqwe")
 end
 
