@@ -1,12 +1,15 @@
 get '/figo/login' do
-  puts "Redirecting to: #{$figo_connection.login_url("qweqwe")}"
-  redirect $figo_connection.login_url("qweqwe")
+  redirect $figo_connection.
+    login_url("qweqwe", "accounts=ro transactions=ro balance=ro user=ro")
 end
 
-get '/figo/figo_login' do
-  puts params
-end
+get '/callback*' do
+  if params['state'] != "qweqwe"
+    raise Exception.new("Bogus redirect, wrong state")
+  end
 
-get '/callback' do
-  puts params
+  token_hash = $figo_connection.obtain_access_token(params['code'])
+  session[:figo_token] = token_hash['access_token']
+
+  redirect "/accounts"
 end

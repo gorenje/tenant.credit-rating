@@ -1,0 +1,38 @@
+%section.bgc-grey.fxg-1.d-fx.fxjc-c
+  .fxg-1.d-fx.fxw-nw.fxjc-s.fxac-s.max-w-1000px.fxd-v
+    .w-100p.h-400px.m-5px.bs-1.brad-2px.bgc-white.p-5px.o-a
+      %table
+        %tr
+          %th Account Owner
+          %td= @current_account.owner
+        %tr
+          %th Account Number
+          %td= @current_account.account_number
+        %tr
+          %th Bank Code
+          %td= @current_account.bank_code
+        %tr
+          %th IBAN
+          %td= @current_account.iban
+        %tr
+          %th Balance
+          %td
+            = @current_account.balance.balance
+            = @current_account.currency
+    .w-100p.h-400px.m-5px.bs-1.brad-2px.bgc-white.p-5px.o-a
+      %table
+        %thead
+          %tr
+            %th Date
+            %th Name
+            %th Account Number
+            %th Purpose
+            %th.txa-r Amount
+        %tbody
+          - (@transations || []).each do |transaction|
+            %tr
+              %td= transation.value_date
+              %td= transation.name
+              %td= transation.account_number
+              %td= transation.purpose
+              %td.txa-r= transation.amount
