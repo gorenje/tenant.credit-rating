@@ -24,10 +24,12 @@ namespace :import do
                      :account_number     => acc.account_number,
                      :icon_url           => acc.icon,
                      :bank               => dbbank,
-                     :last_known_balance => acc.balance.balance.to_s)
+                     :last_known_balance => acc.balance.balance.to_s,
+                     :save_pin           => acc.bank.save_pin,
+                     :sepa_creditor_id   => acc.bank.sepa_creditor_id)
 
         begin
-           acc.transactions.each do |trans|
+           acc.transactions(dbacc.newest_transaction_id).each do |trans|
              dbtrans =
                Transaction.where( :figo_transaction_id => trans.transaction_id,
                                   :account             => dbacc).first_or_create

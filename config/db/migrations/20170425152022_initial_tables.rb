@@ -8,6 +8,7 @@ class InitialTables < ActiveRecord::Migration
       t.string   :language
       t.datetime :join_date
       t.text     :access_token
+      t.text     :authorization_code
 
       t.hstore :last_import_attempt_status
       t.datetime :last_successful_import, :index => true
@@ -26,6 +27,9 @@ class InitialTables < ActiveRecord::Migration
       t.text    :icon_url
       t.decimal :last_known_balance
 
+      t.string  :sepa_creditor_id
+      t.boolean :save_pin
+
       t.belongs_to :user
       t.belongs_to :bank
       t.timestamps :null => false
@@ -34,25 +38,24 @@ class InitialTables < ActiveRecord::Migration
     add_index :accounts, [:user_id, :figo_account_id]
 
     create_table :banks do |t|
-      t.string :figo_bank_id, :index => true
-      t.string :figo_bank_code
-      t.string :figo_bank_name
-      t.string :sepa_creditor_id
+      t.string  :figo_bank_id, :index => true
+      t.string  :figo_bank_code
+      t.string  :figo_bank_name
 
       t.timestamps :null => false
     end
 
     create_table :transactions do |t|
-      t.string   :figo_transaction_id, :index => true
-      t.string   :name
-      t.decimal  :amount
-      t.string   :currency
-      t.datetime :booking_date
-      t.datetime :value_date
-      t.boolean  :booked
-      t.text     :booking_text
-      t.text     :purpose
-      t.text     :transaction_type
+      t.string  :figo_transaction_id, :index => true
+      t.string  :name
+      t.decimal :amount
+      t.string  :currency
+      t.date    :booking_date
+      t.date    :value_date
+      t.boolean :booked
+      t.text    :booking_text
+      t.text    :purpose
+      t.text    :transaction_type
 
       t.belongs_to :account
       t.timestamps :null => false
