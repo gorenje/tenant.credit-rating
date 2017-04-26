@@ -8,7 +8,9 @@ class User < ActiveRecord::Base
 
     user = Figo::Session.new(access_token).user
     if User.where(:email => user.email).count > 0
-      return User.where(:email => user.email).first
+      return User.where(:email => user.email).first.tap do |user|
+        user.creds = { "access_token" => access_token }
+      end
     end
 
     create(:email          => user.email,
@@ -16,11 +18,27 @@ class User < ActiveRecord::Base
            :address        => user.address,
            :email_verified => user.verified_email,
            :language       => user.language,
-           :join_date      => user.join_date,
-           :access_token   => access_token)
+           :join_date      => user.join_date).tap do |user|
+      user.creds = { "access_token" => access_token }
+    end
   end
 
   def figo_session
-    Figo::Session.new(access_token)
+    Figo::Session.new(creds["access_token"])
+  end
+
+  def login_token=(val)
+    self.creds = self.creds.merge("login_token" => val)
+  end
+
+  def creds
+    JSON(AdtekioUtilities::Encrypt.
+         decode_from_base64(credentials ||
+                    AdtekioUtilities::Encrypt.encode_to_base64({}.to_json)))
+  end
+
+  def creds=(hsh)
+    update(:credentials =>
+           AdtekioUtilities::Encrypt.encode_to_base64(hsh.to_json))
   end
 end

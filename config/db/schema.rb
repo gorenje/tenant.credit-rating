@@ -73,8 +73,7 @@ ActiveRecord::Schema.define(version: 20170425152022) do
     t.boolean  "email_verified"
     t.string   "language"
     t.datetime "join_date"
-    t.text     "access_token"
-    t.text     "authorization_code"
+    t.text     "credentials"
     t.hstore   "last_import_attempt_status"
     t.datetime "last_successful_import"
     t.datetime "created_at",                 null: false

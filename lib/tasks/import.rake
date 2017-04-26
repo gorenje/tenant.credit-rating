@@ -1,6 +1,6 @@
 namespace :import do
   desc <<-EOF
-    Defines the task fubar:snafu:doit
+    Import account and transaction data for all users.
   EOF
   task :from_figo do
     User.all.each do |user|
@@ -29,11 +29,12 @@ namespace :import do
                      :sepa_creditor_id   => acc.bank.sepa_creditor_id)
 
         begin
-           acc.transactions(dbacc.newest_transaction_id).each do |trans|
-             dbtrans =
-               Transaction.where( :figo_transaction_id => trans.transaction_id,
-                                  :account             => dbacc).first_or_create
-             dbtrans.update(:name             => trans.name,
+          acc.transactions(dbacc.newest_transaction_id).each do |trans|
+            dbtrans =
+              Transaction.where( :figo_transaction_id => trans.transaction_id,
+                                 :account             => dbacc).first_or_create
+
+            dbtrans.update( :name             => trans.name,
                             :amount           => trans.amount.to_s,
                             :currency         => trans.currency,
                             :booking_date     => trans.booking_date,
@@ -42,7 +43,7 @@ namespace :import do
                             :purpose          => trans.purpose,
                             :transaction_type => trans.type,
                             :booking_text     => trans.booking_text)
-           end
+          end
         rescue
         end
       end

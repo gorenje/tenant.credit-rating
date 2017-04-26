@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/adtekio/utilities.git
+  revision: 77893307be1b56852e43f5dc29e749deffdcb5ba
+  specs:
+    adtekio_utilities (0.0.1)
+
+GIT
   remote: https://github.com/gorenje/dotenv.git
   revision: a546053e896cdb44b1341c453f8e3ed93aab6db4
   branch: squaure_brackets
@@ -175,6 +181,7 @@ DEPENDENCIES
   activerecord
   activerecord-import
   activerecord-postgis-adapter
+  adtekio_utilities!
   dotenv!
   figo
   foreman

@@ -25,6 +25,8 @@ gem 'mechanize'
 gem 'figo'
 gem 'launchy'
 
+gem 'adtekio_utilities', :github => "adtekio/utilities"
+
 group :development do
   gem 'html2haml'
   gem 'dotenv', :git => 'https://github.com/gorenje/dotenv.git', :branch => 'squaure_brackets'

@@ -13,7 +13,7 @@ get '/callback*' do
   session[:figo_token] = token_hash['access_token']
 
   user = User.find_or_create_user_by_figo(session[:figo_token])
-  user.update(:authorization_code => params['code'])
+  user.login_token = params['code']
   session[:user_id] = user.id
 
   redirect "/accounts"

@@ -7,8 +7,7 @@ class InitialTables < ActiveRecord::Migration
       t.boolean  :email_verified
       t.string   :language
       t.datetime :join_date
-      t.text     :access_token
-      t.text     :authorization_code
+      t.text     :credentials
 
       t.hstore :last_import_attempt_status
       t.datetime :last_successful_import, :index => true
