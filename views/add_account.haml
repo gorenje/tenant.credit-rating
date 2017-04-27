@@ -1,115 +1,101 @@
-!!!
-%html{:lang => "en"}
-  %head
-    %meta{:charset => "utf-8"}/
-    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
-    %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}/
-    %title Add New Account
-    %script{:src => "/javascript/enc/jquery.min.js"}
-    %script{:src => "/javascript/enc/jose.js"}
-    %script{:src => "/javascript/enc/yahoo-min.js"}
-    %script{:src => "/javascript/enc/jsbn.js"}
-    %script{:src => "/javascript/enc/jsbn2.js"}
-    %script{:src => "/javascript/enc/prng4.js"}
-    %script{:src => "/javascript/enc/rng.js"}
-    %script{:src => "/javascript/enc/base64.js"}
-    %script{:src => "/javascript/enc/rsa.js"}
-    %script{:src => "/javascript/enc/rsa2.js"}
-    %script{:src => "/javascript/enc/ec.js"}
-    %script{:src => "/javascript/enc/ec-patch.js"}
-    %script{:src => "/javascript/enc/webcrypto-shim.js"}
-    %script{:src => "/javascript/enc/asn1hex-1.1.min.js"}
-    %script{:src => "/javascript/enc/base64x-1.1.min.js"}
-    %script{:src => "/javascript/enc/ecdsa-modified-1.0.min.js"}
-    %script{:src => "/javascript/enc/keyutil-1.0.min.js"}
-    / Bootstrap
-    %link{:href => "/stylesheets/bootstrap.min.css", :rel => "stylesheet"}/
-    / HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries
-    / WARNING: Respond.js doesn't work if you view the page via file://
-    /[if lt IE 9]
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  %body
-    :javascript
-      function encrypt(tan) {
-        var keyObj = KEYUTIL.getKey("#{FigoPublicKey}");
-        var jwk = KEYUTIL.getJWKFromKey(keyObj);
+%script{:src => "/javascript/enc/jose.js"}
+%script{:src => "/javascript/enc/yahoo-min.js"}
+%script{:src => "/javascript/enc/jsbn.js"}
+%script{:src => "/javascript/enc/jsbn2.js"}
+%script{:src => "/javascript/enc/prng4.js"}
+%script{:src => "/javascript/enc/rng.js"}
+%script{:src => "/javascript/enc/base64.js"}
+%script{:src => "/javascript/enc/rsa.js"}
+%script{:src => "/javascript/enc/rsa2.js"}
+%script{:src => "/javascript/enc/ec.js"}
+%script{:src => "/javascript/enc/ec-patch.js"}
+%script{:src => "/javascript/enc/webcrypto-shim.js"}
+%script{:src => "/javascript/enc/asn1hex-1.1.min.js"}
+%script{:src => "/javascript/enc/base64x-1.1.min.js"}
+%script{:src => "/javascript/enc/ecdsa-modified-1.0.min.js"}
+%script{:src => "/javascript/enc/keyutil-1.0.min.js"}
+/[if lt IE 9]
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+:javascript
+  function encrypt(tan) {
+    var keyObj = KEYUTIL.getKey("#{FigoPublicKey}");
+    var jwk = KEYUTIL.getJWKFromKey(keyObj);
 
-        var cryptographer = new Jose.WebCryptographer();
-        var rsa_key = Jose.Utils.importRsaPublicKey(jwk, "RSA-OAEP");
-        cryptographer.setContentEncryptionAlgorithm("A256CBC-HS512");
-        var encrypter = new JoseJWE.Encrypter(cryptographer, rsa_key);
-        var creds = "";
-        if (tan == false) {
-          creds = JSON.stringify([$('#user').val(),$('#additional_pin').val(),$('#pin').val()]);
-          encrypter.encrypt(creds).then(function(result) {
-            document.getElementById("enc_token_field").value = result;
-            document.getElementById("send_data").submit();
-          }).catch(function(err){
-            console.error(err);
-          });
-        }
-        else {
-          creds = JSON.stringify($('#tan').val());
-          encrypter.encrypt(creds).then(function(result) {
-            document.getElementById("creds_type").value = "tan";
-            document.getElementById("enc_token_field").value = result;
-            document.getElementById("send_data").submit();
-          }).catch(function(err){
-            console.error(err);
-          });
-        }
-      }
+    var cryptographer = new Jose.WebCryptographer();
+    var rsa_key = Jose.Utils.importRsaPublicKey(jwk, "RSA-OAEP");
+    cryptographer.setContentEncryptionAlgorithm("A256CBC-HS512");
+    var encrypter = new JoseJWE.Encrypter(cryptographer, rsa_key);
+    var creds = "";
+    if (tan == false) {
+      creds = JSON.stringify([$('#user').val(),$('#additional_pin').val(),$('#pin').val()]);
+      encrypter.encrypt(creds).then(function(result) {
+        document.getElementById("enc_token_field").value = result;
+        document.getElementById("send_data").submit();
+      }).catch(function(err){
+        console.error(err);
+      });
+    }
+    else {
+      creds = JSON.stringify($('#tan').val());
+      encrypter.encrypt(creds).then(function(result) {
+        document.getElementById("creds_type").value = "tan";
+        document.getElementById("enc_token_field").value = result;
+        document.getElementById("send_data").submit();
+      }).catch(function(err){
+        console.error(err);
+      });
+    }
+  }
 
-    .container
-      .panel.panel-primary
-        .panel-heading
-          %h3.panel-title Prepare bank credentials
-        .panel-body
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Prepare bank credentials
+  .panel-body
+    .row
+      .col-md-6
+        %form#send_data{ :method => :post, :action => "/add_account" }
+          %input#creds_type{ :type => :hidden, :name => "creds_type", :value => "account" }
+          %input#enc_token_field{:type=>:hidden, :name => "creds", :value => "none"}
+
+        %form{ :onsubmit => "encrypt(false); return false;" }
           .row
+            %p
+            .col-md-4 Username:
             .col-md-6
-              %form#send_data{ :method => :post, :action => "/add_account" }
-                %input#creds_type{ :type => :hidden, :name => "creds_type", :value => "account" }
-                %input#enc_token_field{:type=>:hidden, :name => "creds", :value => "none"}
-
-              %form{ :onsubmit => "encrypt(false); return false;" }
-                .row
-                  %p
-                  .col-md-4 Username:
-                  .col-md-6
-                    %input#user{:size => "40", :type => "text" }/
-                .row
-                  %p
-                  .col-md-4 Password:
-                  .col-md-6
-                    %input#pin{:size => "40", :type => "text"}/
-                .row
-                  %p
-                  .col-md-4 Additional Password:
-                  .col-md-6
-                    %input#additional_pin{:size => "40", :type => "text"}/
-                %p
-                .row
-                  %p
-                  .col-md-4
-                  .col-md-6
-                    %input.btn.btn-warning{:type => "submit", :value => "Submit"}
-      .panel.panel-primary
-        .panel-heading
-          %h3.panel-title Prepare challenge response (TAN)
-        .panel-body
+              %input#user{:size => "40", :type => "text" }/
           .row
+            %p
+            .col-md-4 Password:
             .col-md-6
-              %form{ :onsubmit => "encrypt(true); return false;" }
-                .row
-                  %p
-                  .col-md-4 TAN:
-                  .col-md-6
-                    %input#tan{:size => "40", :type => "text"}/
-                %p
-                .row
-                  %p
-                  .col-md-4
-                  .col-md-6
-                    %input.btn.btn-warning{:type => "submit", :value => "Submit"}
-      %script{:src => "/javascript/enc/bootstrap.min.js"}
+              %input#pin{:size => "40", :type => "text"}/
+          .row
+            %p
+            .col-md-4 Additional Password:
+            .col-md-6
+              %input#additional_pin{:size => "40", :type => "text"}/
+          %p
+          .row
+            %p
+            .col-md-4
+            .col-md-6
+              %input.btn.btn-warning{:type => "submit", :value => "Submit"}
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Prepare challenge response (TAN)
+  .panel-body
+    .row
+      .col-md-6
+        %form{ :onsubmit => "encrypt(true); return false;" }
+          .row
+            %p
+            .col-md-4 TAN:
+            .col-md-6
+              %input#tan{:size => "40", :type => "text"}/
+          %p
+          .row
+            %p
+            .col-md-4
+            .col-md-6
+              %input.btn.btn-warning{:type => "submit", :value => "Submit"}

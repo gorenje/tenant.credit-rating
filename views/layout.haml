@@ -9,47 +9,46 @@
     %link{:href => "/stylesheets/sandbox.css?#{rand}", :rel => "stylesheet", :type => "text/css"}/
     %link{:href => "/stylesheets/icons.css?#{rand}", :rel => "stylesheet", :type => "text/css"}/
     %link{:href => "/stylesheets/app.css?#{rand}", :rel => "stylesheet", :type => "text/css"}/
-    :css
-      .decorated-link:hover {
-          text-decoration:underline;
-      }
+    %link{:href => "/stylesheets/bootstrap.min.css", :rel => "stylesheet"}/
     %script{ :src => "//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" }
-  %body.grid.d-fx.fxd-v.bgc-grey
-    %header.bgc-light-blue.d-fx.fxw-w.fxjc-c.min-h-120px.max-w-100p
-      .fxg-1.pt-10px.pl-30px.pr-30px.fxai-c.d-fx.fxd-v.c-tan.max-w-500px
-        .brad-100p.bgc-tan.c-white.w-60px.h-60px.bs-1.fsz-50px.d-fx.fxai-c.fxjc-c{"data-icon" => "euro"}
-        .fsz-20px.p-10px.fw-600.c-black.brt-1px.mt-5px Deutsche Bonität
-      .fxg-3.d-fx.fxd-v.max-w-1000px
-        .d-fx.fxai-c.fxw-w.fxjc-c.fxg-1.mt-30px
-          .fxg-1.d-fx.fxai-c.p-10px.fxjc-sa.fsz-16px.fw-600
-            %form{ :action => "/search", :method => "post" }
-              %label.d-fx.brb-1px.fxai-c.fxg-1.ml-20px.mr-20px.w-600px
-                %input.fxg-1.br-n.bgc-light-blue{:placeholder => "Search", :type => "text", :name => :term }/
-                %div{"data-icon" => "search7"}
-              %input.hide{ :type => :submit }
-        %nav.d-fx.fxjc-sb.p-20px.fxw-w.fsz-20px
-          - if is_logged_in?
-            %a.fxg-1.fxai-c.d-fx.fxd-v.brr-1px.min-w-100px{ :href => "/accounts" } Konten
-            %a.fxg-1.fxai-c.d-fx.fxd-v.brr-1px.min-w-100px{ :href => "/rating" } Bonität
-            %a.fxg-1.fxai-c.d-fx.fxd-v.brr-1px.min-w-100px{ :href => "/services" } Dienste
-          - else
-            %a.fxg-1.fxai-c.d-fx.fxd-v.brr-1px.min-w-100px{ :href => "/figo/login" } Login
+  %body.bgc-grey
+    %nav.navbar.navbar-default.navbar-fixed-top
+      .container
+        .navbar-header
+          %button.navbar-toggle.collapsed{"aria-controls" => "navbar", "aria-expanded" => "false", "data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand{:href => "/"} Deutsche Bonität
+        #navbar.collapse.navbar-collapse
+          %ul.nav.navbar-nav
+            - if is_logged_in?
+              - MenuItems.each do |name, path|
+                = haml :"_menu_item", :locals => {:name => name, :path => path}
+              %li.dropdown
+                %a.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+                  More
+                  %span.caret
+                %ul.dropdown-menu
+                  %li
+                    %a{:href => "/aboutus"} About Us
+                  %li
+                    %a{:href => "/contact"} Contact Us
+                  %li
+                    %a{:href => "/sitemap"} Sitemap
+                  %li
+                    %a{:href => "/add_account"} Add Bank Account
+            - else
+              %li
+                %a{ :href => "/figo/login" } Login
 
-    = yield
 
-    %footer.bgc-black.min-h-40px.d-fx.fxai-c.lh-15px.fsz-12px.p-10px.max-w-100p
-      %a.fxai-c.d-fx.fxd-v.brr-1px.c-white.pr-10px.decorated-link{ :href => "/aboutus" } About Us
-      %a.fxai-c.d-fx.fxd-v.brr-1px.c-white.pl-10px.pr-10px.ws-nw.decorated-link{ :href => "/sitemap" } Sitemap
-      %a.fxai-c.d-fx.fxd-v.brr-1px.c-white.pl-10px.pr-10px.ws-nw.decorated-link{ :href => "/contact" } Contact Us
-      - unless is_logged_in?
-        %a.fxai-c.d-fx.fxd-v.brr-1px.c-white.pl-10px.pr-10px.ws-nw.decorated-link{ :href => "/figo/login" } Login
-      - else
-        %a.fxai-c.d-fx.fxd-v.brr-1px.c-white.pl-10px.pr-10px.ws-nw.decorated-link{ :href => "/logout" } Logout
+    .container
+      = yield
 
-      .d-fx.fxai-c.p-10px
-        %a.m-5px.brad-100p.bgc-white-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "facebook4"}
-        %a.m-5px.brad-100p.bgc-white-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "twitter"}
-        %a.m-5px.brad-100p.bgc-white-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "linkedin2"}
-        %a.m-5px.brad-100p.bgc-white-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "rss"}
-      %a.fxai-c.d-fx.fxd-v.brr-1px.c-white.pr-10px.ml-a.ws-nw.decorated-link Privacy Statement
-      %a.fxai-c.d-fx.fxd-v.c-white.pl-10px Copyright 2017 Deutsche Bonität. All rights reserved.
+    %footer.footer
+      .container
+        %p.text-muted Copyright 2017 Deutsche Bonität Gesellschaft
+
+    %script{:src => "/javascript/enc/bootstrap.min.js"}

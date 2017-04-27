@@ -1,38 +1,43 @@
-%section.bgc-grey.fxg-1.d-fx.fxjc-c
-  .fxg-1.d-fx.fxw-nw.fxjc-s.fxac-s.max-w-1000px.fxd-v
-    .w-100p.h-400px.m-5px.bs-1.brad-2px.bgc-white.p-5px.o-a
-      %table.colorit.w-100p
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Account Details
+  .panel-body
+    %table.colorit.w-100p
+      %tr
+        %th Account Owner
+        %td= @current_account.owner
+      %tr
+        %th Account Number
+        %td= @current_account.account_number
+      %tr
+        %th Bank Code
+        %td= @current_account.bank_code
+      %tr
+        %th IBAN
+        %td= @current_account.iban
+      %tr
+        %th Balance
+        %td
+          = @current_account.balance.balance
+          = @current_account.currency
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Transactions
+  .panel-body
+    %table.colorit.w-100p
+      %thead
         %tr
-          %th Account Owner
-          %td= @current_account.owner
-        %tr
+          %th Date
+          %th Name
           %th Account Number
-          %td= @current_account.account_number
-        %tr
-          %th Bank Code
-          %td= @current_account.bank_code
-        %tr
-          %th IBAN
-          %td= @current_account.iban
-        %tr
-          %th Balance
-          %td
-            = @current_account.balance.balance
-            = @current_account.currency
-    .w-100p.h-400px.m-5px.bs-1.brad-2px.bgc-white.p-5px.o-a
-      %table.colorit.w-100p
-        %thead
+          %th Purpose
+          %th.txa-r Amount
+      %tbody
+        - (@transactions || []).sort_by(&:value_date).each do |transaction|
           %tr
-            %th Date
-            %th Name
-            %th Account Number
-            %th Purpose
-            %th.txa-r Amount
-        %tbody
-          - (@transactions || []).sort_by(&:value_date).each do |transaction|
-            %tr
-              %td= transaction.value_date
-              %td= transaction.name
-              %td= transaction.account_number
-              %td= transaction.purpose
-              %td.txa-r.ws-nw{:class => transaction.amount < 0 ? "c-red" : "c-blue"}= currency(transaction.amount, :unit => @current_account.currency)
+            %td= transaction.value_date
+            %td= transaction.name
+            %td= transaction.account_number
+            %td= transaction.purpose
+            %td.txa-r.ws-nw{:class => transaction.amount < 0 ? "c-red" : "c-blue"}= currency(transaction.amount, :unit => @current_account.currency)
