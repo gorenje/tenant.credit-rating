@@ -29,10 +29,10 @@
             %th Purpose
             %th.txa-r Amount
         %tbody
-          - (@transactions || []).each do |transaction|
+          - (@transactions || []).sort_by(&:value_date).each do |transaction|
             %tr
               %td= transaction.value_date
               %td= transaction.name
               %td= transaction.account_number
               %td= transaction.purpose
-              %td.txa-r{:class => transaction.amount < 0 ? "c-red" : "c-blue"}= transaction.amount
+              %td.txa-r.ws-nw{:class => transaction.amount < 0 ? "c-red" : "c-blue"}= currency(transaction.amount, :unit => @current_account.currency)

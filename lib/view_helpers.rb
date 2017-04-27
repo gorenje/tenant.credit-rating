@@ -11,4 +11,8 @@ module ViewHelpers
   def is_logged_in?
     !!session[:figo_token]
   end
+
+  def format_rating_value(val)
+    val.is_a?(Integer) ? val : "%02.2f" % val
+  end
 end

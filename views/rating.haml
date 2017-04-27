@@ -15,7 +15,7 @@
             %tr
               %td
                 %span{:tooltip => factor[:desc] }= factor[:name]
-              %td.txa-c= val.first
+              %td.txa-c= format_rating_value(val.first)
               %td.txa-c{:class => val.last < 0 ? "c-red" : "c-green"}= val.last
           %tr
             %td Total Score
