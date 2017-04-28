@@ -9,8 +9,15 @@ post '/add_account' do
 
   @user = User.find(session[:user_id])
   if params[:creds_type] == "account"
-    $figo_connection.add_account("DE", params[:creds], "90090042",
-                                 "DE67900900424711951500", true)
+    iban = "DE67900900424711951500"
+    if account = @user.accounts.where(:iban => iban).first
+      account.figo_credentials = params[:creds]
+    else
+      account = Account.create(:user => @user, :iban => iban)
+      account.figo_credentials = params[:creds]
+    end
+
+    $figo_connection.add_account("DE", params[:creds], "90090042",iban, true)
   else
     ### Else this is a token
   end

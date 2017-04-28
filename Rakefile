@@ -6,6 +6,9 @@ require 'zlib'
 require 'stringio'
 require 'pry'
 require 'json'
+require 'jwe'
+require 'digest/sha2'
+require 'iban-tools'
 
 if File.exists?(".env")
   require 'dotenv'

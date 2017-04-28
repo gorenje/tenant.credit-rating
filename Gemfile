@@ -27,6 +27,7 @@ gem 'launchy'
 
 gem 'adtekio_utilities', :github => "adtekio/utilities"
 gem 'jwe'
+gem 'iban-tools'
 
 group :development do
   gem 'html2haml'
