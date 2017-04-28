@@ -2,7 +2,8 @@
   .panel-heading
     %h3.panel-title Account Details
   .panel-body
-    %table.colorit.w-100p
+    = haml :"_js_tablesorter", :locals => {:tableid => "acctable" }
+    %table#acctable.colorit.w-100p.tablesorter
       %thead
         %tr
           %th Owner

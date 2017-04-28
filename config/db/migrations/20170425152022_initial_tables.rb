@@ -28,6 +28,7 @@ class InitialTables < ActiveRecord::Migration
 
       t.string  :sepa_creditor_id
       t.boolean :save_pin
+      t.text    :credentials
 
       t.belongs_to :user
       t.belongs_to :bank

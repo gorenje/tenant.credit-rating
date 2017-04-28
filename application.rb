@@ -50,9 +50,9 @@ helpers do
   include ViewHelpers
 end
 
-# before do
-#   unless session[:authenticated] ||
-#       request.path_info =~ /^\/(auth)/
-#     redirect '/auth'
-#   end
-# end
+before do
+  unless session[:authenticated] ||
+      request.path_info =~ /^\/(auth)/
+    redirect '/auth'
+  end
+end

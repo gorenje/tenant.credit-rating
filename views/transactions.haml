@@ -25,7 +25,8 @@
   .panel-heading
     %h3.panel-title Transactions
   .panel-body
-    %table.colorit.w-100p
+    = haml :"_js_tablesorter", :locals => {:tableid => "transtable" }
+    %table#transtable.colorit.w-100p.tablesorter
       %thead
         %tr
           %th Date

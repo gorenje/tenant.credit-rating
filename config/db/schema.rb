@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20170425152022) do
     t.decimal  "last_known_balance"
     t.string   "sepa_creditor_id"
     t.boolean  "save_pin"
+    t.text     "credentials"
     t.integer  "user_id"
     t.integer  "bank_id"
     t.datetime "created_at",         null: false
