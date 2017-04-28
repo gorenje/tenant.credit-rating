@@ -8,3 +8,9 @@ Generate a new cred key with:
     prompt> cipher.encrypt
     prompt> Base64.encode64(cipher.random_key) ## value for CRED_KEY_BASE64
     prompt> Base64.encode64(cipher.random_iv) ## value for CRED_IV_BASE64
+
+
+Generating Private/Public key pair suitable for password encryption:
+
+    openssl genrsa -out mykey.pem 2048
+    openssl rsa -in mykey.pem -pubout > mykey.pub

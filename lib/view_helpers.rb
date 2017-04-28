@@ -9,7 +9,7 @@ module ViewHelpers
   end
 
   def is_logged_in?
-    !!session[:figo_token]
+    !!session[:user_id]
   end
 
   def format_rating_value(val)

@@ -31,6 +31,16 @@ class User < ActiveRecord::Base
     self.creds = self.creds.merge("login_token" => val)
   end
 
+  def password=(val)
+    self.creds = self.creds.merge("pass_hash" => Digest::SHA512.hexdigest(val))
+  end
+
+  def password_match?(val)
+    c = self.creds
+    val && c &&
+      c["pass_hash"] && Digest::SHA512.hexdigest(val) == c["pass_hash"]
+  end
+
   def creds
     JSON(AdtekioUtilities::Encrypt.
          decode_from_base64(credentials ||
