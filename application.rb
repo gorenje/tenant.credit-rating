@@ -41,8 +41,8 @@ Dir[File.join(File.dirname(__FILE__),'config', 'initializers','*.rb')].
   each { |a| require_relative a }
 
 [
- ['routes'],
  ['lib'],
+ ['routes'],
  ['models'],
 ].each do |path|
   Dir[File.join(File.dirname(__FILE__), path, '*.rb')].each { |f| require f }

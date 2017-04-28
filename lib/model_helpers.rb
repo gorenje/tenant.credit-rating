@@ -20,6 +20,19 @@ module ModelHelpers
     end
   end
 
+  module CredentialsHelper
+    def creds
+      JSON(AdtekioUtilities::Encrypt.
+           decode_from_base64(credentials ||
+                      AdtekioUtilities::Encrypt.encode_to_base64({}.to_json)))
+    end
+
+    def creds=(hsh)
+      update(:credentials =>
+             AdtekioUtilities::Encrypt.encode_to_base64(hsh.to_json))
+    end
+  end
+
   def update_from_url(agent)
     page      = agent.get(url)
     more_data = {}

@@ -9,9 +9,10 @@ post '/add_account' do
 
   @user = User.find(session[:user_id])
   if params[:creds_type] == "account"
-    @user.figo_session.add_account("DE", params[:creds], "90090042",
-                                   "DE67900900424711951500", true)
+    $figo_connection.add_account("DE", params[:creds], "90090042",
+                                 "DE67900900424711951500", true)
   else
+    ### Else this is a token
   end
   haml :add_account
 end

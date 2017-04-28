@@ -3,22 +3,26 @@
   .panel-heading
     %h3.panel-title Bonität
   .panel-body
-    %table.w-100p.colorit
-      %thead
-        %tr
-          %th.txa-l Factor
-          %th.txa-c Value
-          %th.txa-c Score
-      %tbody
-        - RatingFactors.each do |_,factor|
-          - val = factor[:proc].call(@user)
-          - total_score += val.last
+    - if @user.accounts.size == 0
+      No Accounts, No Credit Rating.
+      %a{ :href => "/add_account" } Add An Account.
+    - else
+      %table.w-100p.colorit
+        %thead
           %tr
+            %th.txa-l Factor
+            %th.txa-c Value
+            %th.txa-c Score
+        %tbody
+          - RatingFactors.each do |_,factor|
+            - val = factor[:proc].call(@user)
+            - total_score += val.last
+            %tr
+              %td
+                %span{:tooltip => factor[:desc] }= factor[:name]
+              %td.txa-c= format_rating_value(val.first)
+              %td.txa-c{:class => val.last < 0 ? "c-red" : "c-green"}= val.last
+          %tr
+            %td.fw-900 Total Score
             %td
-              %span{:tooltip => factor[:desc] }= factor[:name]
-            %td.txa-c= format_rating_value(val.first)
-            %td.txa-c{:class => val.last < 0 ? "c-red" : "c-green"}= val.last
-        %tr
-          %td.fw-900 Total Score
-          %td
-          %td.txa-c{:class => total_score < 0 ? "c-red" : "c-green"}= total_score
+            %td.txa-c{:class => total_score < 0 ? "c-red" : "c-green"}= total_score

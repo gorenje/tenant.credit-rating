@@ -15,4 +15,8 @@ module ViewHelpers
   def format_rating_value(val)
     val.is_a?(Integer) ? val : "%02.2f" % val
   end
+
+  def format_date(dt)
+    dt.to_s
+  end
 end

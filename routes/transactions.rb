@@ -1,20 +1,17 @@
 get '/accounts' do
-  redirect '/' if session[:figo_token].nil?
+  redirect '/' if session[:user_id].nil?
 
-  figo_session = Figo::Session.new(session[:figo_token])
-  @accounts    = figo_session.accounts
+  @accounts = User.find(session[:user_id]).accounts
 
   haml :accounts
 end
 
 get '/transactions/:account_id' do
-  redirect '/' if session[:figo_token].nil?
+  redirect '/' if session[:user_id].nil?
 
-  figo_session     = Figo::Session.new(session[:figo_token])
-  @accounts        = figo_session.accounts
-  @current_account = figo_session.get_account(params[:account_id])
-  @transactions    = @current_account.transactions
-  @user            = figo_session.user
+  @account = Account.where(:user_id => session[:user_id],
+                           :id => params[:account_id]).first
+  @transactions = @account.transactions
 
   haml :transactions
 end

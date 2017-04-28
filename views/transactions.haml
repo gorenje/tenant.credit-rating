@@ -5,21 +5,20 @@
     %table.colorit.w-100p
       %tr
         %th Account Owner
-        %td= @current_account.owner
+        %td= @account.owner
       %tr
         %th Account Number
-        %td= @current_account.account_number
+        %td= @account.account_number
       %tr
         %th Bank Code
-        %td= @current_account.bank_code
+        %td= @account.bank.figo_bank_code
       %tr
         %th IBAN
-        %td= @current_account.iban
+        %td= @account.iban
       %tr
         %th Balance
         %td
-          = @current_account.balance.balance
-          = @current_account.currency
+          = currency(@account.last_known_balance, :unit => @account.currency)
 
 .panel.panel-primary
   .panel-heading
@@ -33,12 +32,14 @@
           %th Name
           %th Account Number
           %th Purpose
+          %th Type
           %th.txa-r Amount
       %tbody
         - (@transactions || []).sort_by(&:value_date).each do |transaction|
           %tr
-            %td= transaction.value_date
+            %td.p-5px= format_date(transaction.value_date)
             %td= transaction.name
-            %td= transaction.account_number
+            %td= @account.account_number
             %td= transaction.purpose
-            %td.txa-r.ws-nw{:class => transaction.amount < 0 ? "c-red" : "c-blue"}= currency(transaction.amount, :unit => @current_account.currency)
+            %td= transaction.transaction_type
+            %td.txa-r.ws-nw.p-5px{:class => transaction.amount < 0 ? "c-red" : "c-blue"}= currency(transaction.amount, :unit => @account.currency)
