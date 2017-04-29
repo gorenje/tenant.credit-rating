@@ -46,4 +46,39 @@ class User < ActiveRecord::Base
     val && c &&
       c["pass_hash"] && Digest::SHA512.hexdigest(val) == c["pass_hash"]
   end
+
+  def generate_email_token(more_args = {})
+    {}.tap do |p|
+      p[:token]         = AdtekioUtilities::Encrypt.generate_token
+      p[:salt]          = AdtekioUtilities::Encrypt.generate_salt
+      p[:confirm_token] = AdtekioUtilities::Encrypt.generate_sha512(p[:salt], p[:token])
+
+      # so the encoding of the email isnt always the same
+      estr = { :email => email, :salt => p[:salt] }.merge(more_args).to_json
+      p[:email] = AdtekioUtilities::Encrypt.encode_to_base64(estr)
+    end
+  end
+
+  def generate_email_confirmation_link
+    params = generate_email_token
+
+    update(:salt             => nil,
+           :has_confirmed    => false,
+           :confirm_token    => params[:confirm_token])
+
+    "#{$hosthandler.dashboard.url}/user/emailconfirm?%s" % {
+      :email => params[:email], :token => params[:token] }.to_query
+  end
+
+  def email_confirm_token_matched?(token, slt)
+    confirm_token == AdtekioUtilities::Encrypt.generate_sha512(slt, token)
+  end
+
+  def to_hash
+    JSON.parse(to_json)
+  end
+
+  def generate_default_password
+    ""
+  end
 end

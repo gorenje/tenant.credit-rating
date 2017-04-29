@@ -23,6 +23,13 @@ post '/login' do
         u = User.create(:email => data["email"].downcase,
                         :name => data["name"])
         u.password = data["password1"]
+        Mailer::Client.new.
+          send_confirm_email({"confirm_link" =>
+                               u.generate_email_confirmation_link,
+                             "email"     => u.email,
+                             "firstname" => u.name,
+                             "lastname"  => ""})
+
         @message = "Thank You! Confirmation email has been sent."
       end
     end

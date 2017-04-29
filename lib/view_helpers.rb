@@ -19,4 +19,27 @@ module ViewHelpers
   def format_date(dt)
     dt.to_s
   end
+
+  def extract_email_and_salt(encstr)
+    estr = begin
+             AdtekioUtilities::Encrypt.decode_from_base64(encstr)
+           rescue
+             begin
+               AdtekioUtilities::Encrypt.decode_from_base64(CGI.unescape(encstr))
+             rescue
+               "{}"
+             end
+           end
+    # this is a hash: { :email => "fib@fna.de", :salt => "sddsdad" }
+    # so sorting and taking the last will give: ["fib@fna.de","sddsdad"]
+    JSON.parse(estr).sort.map(&:last) rescue [nil,nil]
+  end
+
+  def to_email_confirm(s)
+    "#{$hosthandler.login.url}/users/email-confirmation?r=#{s}"
+  end
+
+  def params_blank?(*args)
+    args.any? { |a| params[a].blank? }
+  end
 end

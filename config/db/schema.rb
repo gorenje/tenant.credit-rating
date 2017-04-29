@@ -75,10 +75,13 @@ ActiveRecord::Schema.define(version: 20170425152022) do
     t.string   "language"
     t.datetime "join_date"
     t.text     "credentials"
+    t.string   "salt"
+    t.string   "confirm_token"
+    t.boolean  "has_confirmed",              default: false
     t.hstore   "last_import_attempt_status"
     t.datetime "last_successful_import"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", using: :btree

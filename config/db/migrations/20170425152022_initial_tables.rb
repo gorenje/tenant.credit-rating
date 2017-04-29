@@ -9,6 +9,10 @@ class InitialTables < ActiveRecord::Migration
       t.datetime :join_date
       t.text     :credentials
 
+      t.string  :salt
+      t.string  :confirm_token
+      t.boolean :has_confirmed, :default => false
+
       t.hstore :last_import_attempt_status
       t.datetime :last_successful_import, :index => true
 
