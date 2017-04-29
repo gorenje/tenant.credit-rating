@@ -3,8 +3,6 @@ get '/login' do
 end
 
 post '/login' do
-  puts params
-
   key = OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub(/\\n/,"\n"))
   data = JSON(JWE.decrypt(params[:creds], key))
 
@@ -33,21 +31,54 @@ post '/login' do
         @message = "Thank You! Confirmation email has been sent."
       end
     end
-  when "login"
-    puts User.where(:email => data["email"].downcase).first
-    puts data["email"]
 
-    if (user = User.where(:email => data["email"].downcase).first) &&
-        user.password_match?(data["password"])
-      session[:user_id] = user.id
-      redirect "/"
+  when "login"
+    if user = User.where(:email => data["email"].downcase).first
+      if user.has_confirmed?
+        if user.password_match?(data["password"])
+          session[:user_id] = user.id
+          redirect "/"
+        else
+          @email = data["email"]
+          @message = "Unknown Email or Wrong Password - take your pick"
+        end
+      else
+        @email = data["email"]
+        @message = "Email not yet confirmed, check your inbox"
+      end
     else
       @email = data["email"]
       @message = "Unknown Email or Wrong Password - take your pick"
     end
+
   else
     @message = "Unknown Interaction With Server"
   end
 
   haml :login
+end
+
+get '/users/email-confirmation' do
+  params[:r]
+end
+
+get '/user/emailconfirm' do
+  if params_blank?(:email,:token)
+    redirect to_email_confirm("MissingData")
+  else
+    email, salt = extract_email_and_salt(params[:email])
+    if email.blank? or salt.blank?
+      redirect(to_email_confirm("DataCorrupt"))
+    end
+
+    user = User.find_by_email(email)
+    redirect(to_email_confirm("EmailUnknown")) if user.nil?
+
+    if user.email_confirm_token_matched?(params[:token], salt)
+      user.update(:has_confirmed => true, :confirm_token => nil)
+      redirect(to_email_confirm("Email Confirmed"))
+    else
+      redirect(to_email_confirm("TokenMismatch"))
+    end
+  end
 end
