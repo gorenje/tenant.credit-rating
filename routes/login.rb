@@ -5,7 +5,7 @@ end
 post '/login' do
   puts params
 
-  key = OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'])
+  key = OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub(/\\n/,"\n"))
   data = JSON(JWE.decrypt(params[:creds], key))
 
   case data["type"]

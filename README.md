@@ -14,3 +14,9 @@ Generating Private/Public key pair suitable for password encryption:
 
     openssl genrsa -out mykey.pem 2048
     openssl rsa -in mykey.pem -pubout > mykey.pub
+
+Or using ruby:
+
+    key = OpenSSL::PKey::RSA.generate(2048)
+    key.export # private key
+    key.public_key.export
