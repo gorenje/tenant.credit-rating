@@ -37,6 +37,7 @@ post '/login' do
         @message = "Thank You! Confirmation email has been sent."
       end
     end
+    haml :register
 
   when "login"
     if user = User.where(:email => data["email"].downcase).first
@@ -56,12 +57,12 @@ post '/login' do
       @email = data["email"]
       @message = "Unknown Email or Wrong Password - take your pick"
     end
+    haml :login
 
   else
     @message = "Unknown Interaction With Server"
+    haml :login
   end
-
-  haml :login
 end
 
 get '/users/email-confirmation' do
