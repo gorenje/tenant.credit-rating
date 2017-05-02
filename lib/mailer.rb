@@ -2,45 +2,11 @@ module Mailer
   class Client
     def send_confirm_email(details)
       send_message do
-        details.merge("slug"     => "request-a-demo-confirm-email",
+        details.merge("slug"     => "deutsche-bonitaet-confirm-email",
                       "subject"  => subject_line(details,"Email Confirmation"),
                       "cc_email" => {
                         :email => "emailconfirm@adtek.io",
-                        :name  => "Adtek Email Confirm"
-                      })
-      end
-    end
-
-    def send_request_a_demo(details)
-      send_message do
-        details.merge("slug"     => "request-a-demo-confirmation",
-                      "subject"  => subject_line(details, "Request a Demo"),
-                      "cc_email" => {
-                        :email => "requestademo@adtek.io",
-                        :name => "Adtek Request-a-demo"
-                      })
-      end
-    end
-
-    def send_reset_password(details)
-      send_message do
-        details.merge("slug"     => "request-password-reset",
-                      "subject"  => subject_line(details, "Password Reset"),
-                      "cc_email" => {
-                        :email => "passwordreset@adtek.io",
-                        :name => "Adtek Password Reset"
-                      })
-      end
-    end
-
-    def send_reset_password_successful(details)
-      send_message do
-        details.merge("slug"     => "request-password-reset-password-changed",
-                      "subject"  => subject_line(details,
-                                                 "Password has been reset"),
-                      "cc_email" => {
-                        :email => "passwordreset@adtek.io",
-                        :name => "Adtek Password Reset"
+                        :name  => "Deutsche Bonitaet Email Confirm"
                       })
       end
     end
@@ -48,7 +14,7 @@ module Mailer
     protected
 
     def subject_line(details, postfix)
-      "%s %s - Adtek %s" % [details["firstname"], details["lastname"], postfix]
+      "%s %s - Deutsche Bonitaet %s" % [details["firstname"], details["lastname"], postfix]
     end
 
     def name_for_template_id(slugstr)
@@ -86,7 +52,7 @@ module Mailer
                               { :name => "but", :value => "required"}],
         :message => {
           :from_email          => "billing@adtek.io",
-          :from_name           => "Adtek.io Payment",
+          :from_name           => "Deutsche Bonitaet",
           :to                  => to_emails(details) << details["cc_email"],
           :preserve_recipients => nil,
           :subject             => details["subject"],

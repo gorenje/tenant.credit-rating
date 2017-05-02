@@ -10,9 +10,6 @@ require 'zlib'
 require 'stringio'
 require 'haml'
 require 'sinatra/support/numeric'
-require 'jwe'
-require 'digest/sha2'
-require 'iban-tools'
 
 register Sinatra::Numeric
 
