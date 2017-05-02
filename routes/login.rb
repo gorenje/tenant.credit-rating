@@ -1,5 +1,11 @@
 get '/login' do
+  @message = session.delete(:message)
+  @email = session.delete(:email)
   haml :login
+end
+
+get '/register' do
+  haml :register
 end
 
 post '/login' do
@@ -76,7 +82,9 @@ get '/user/emailconfirm' do
 
     if user.email_confirm_token_matched?(params[:token], salt)
       user.update(:has_confirmed => true, :confirm_token => nil)
-      redirect(to_email_confirm("Email Confirmed"))
+      session[:email] = user.email
+      session[:message] = "Email Confirmed!"
+      redirect "/login"
     else
       redirect(to_email_confirm("TokenMismatch"))
     end
