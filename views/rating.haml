@@ -7,6 +7,7 @@
       No Accounts, No Credit Rating.
       %a{ :href => "/add_account" } Add An Account.
     - else
+      %img.img-button{ :src => "/button/#{@user.external_id}.svg" }
       %table.w-100p.colorit
         %thead
           %tr

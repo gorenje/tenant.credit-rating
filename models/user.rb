@@ -5,6 +5,12 @@ class User < ActiveRecord::Base
 
   include ModelHelpers::CredentialsHelper
 
+  def self.find_by_external_id(eid)
+    _,p,l,v = Base64::decode64(eid).split(/\|/)
+    v =~ /.{#{p.to_i}}(.{#{l.to_i}})/
+    find($1)
+  end
+
   def self.find_or_create_user_by_figo(access_token)
     return if access_token.nil?
 
@@ -25,12 +31,30 @@ class User < ActiveRecord::Base
     end
   end
 
+  def rating
+    RatingFactors.map do |_,factor|
+      factor[:proc].call(self).last
+    end.sum
+  end
+
+  def external_id
+    l = id.to_s.length
+    p = rand(18-l)+1
+    r = ("%020d" % rand.to_s.gsub(/^.+[.]/,'').to_i).
+      gsub(/(.{#{p}}).{#{l}}(.+)/, "\\1#{id}\\2")
+    Base64::encode64("eid|%03d|%03d|%s" % [p,l,r]).strip
+  end
+
   def figo_session
-    Figo::Session.new(creds["access_token"])
+    figo_access_token.blank? ? nil : Figo::Session.new(figo_access_token)
   end
 
   def login_token=(val)
     self.creds = self.creds.merge("login_token" => val)
+  end
+
+  def figo_access_token
+    creds["access_token"]
   end
 
   def figo_access_token=(val)

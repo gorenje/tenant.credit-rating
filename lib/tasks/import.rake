@@ -5,6 +5,7 @@ namespace :import do
   task :from_figo do
     User.all.each do |user|
       puts "Import #{user.name} / #{user.email}"
+      next if user.figo_session.nil?
 
       user.figo_session.accounts.each do |acc|
         puts "   Found #{acc.account_id}"

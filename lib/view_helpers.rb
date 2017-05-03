@@ -42,4 +42,10 @@ module ViewHelpers
   def params_blank?(*args)
     args.any? { |a| params[a].blank? }
   end
+
+  def generate_svg(name, &block)
+    content_type "image/svg+xml"
+    yield if block_given?
+    haml :"images/_#{name}.svg", :layout => false
+  end
 end
