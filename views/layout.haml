@@ -33,8 +33,20 @@
                 = haml :"_menu_item", :locals => {:name => name, :path => path}
               %li.dropdown
                 %a.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
-                  More
-                  %span.caret
+                  %span{ "data-icon" => "user2" }
+                %ul.dropdown-menu
+                  %li
+                    %a{:href => "/add_account"} Add Bank Account
+                  %li
+                    %a{:href => "/figo/login"} Connect with Figo
+                  %li
+                    %a{:href => "/badge"} Bonitätsbadge
+                  %li
+                    %a{:href => "/logout", "data-icon" => "log-out"}
+
+              %li.dropdown
+                %a.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+                  %span{ "data-icon" => "dots-three-horizontal" }
                 %ul.dropdown-menu
                   %li
                     %a{:href => "/aboutus"} About Us
@@ -42,13 +54,9 @@
                     %a{:href => "/contact"} Contact Us
                   %li
                     %a{:href => "/sitemap"} Sitemap
-                  %li
-                    %a{:href => "/add_account"} Add Bank Account
-                  %li
-                    %a{:href => "/figo/login"} Connect with Figo
             - else
               %li
-                %a{ :href => "/login" } Login
+                %a{"data-icon" => "login", :href => "/login"}
 
 
     .container
