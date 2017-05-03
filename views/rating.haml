@@ -7,7 +7,26 @@
       No Accounts, No Credit Rating.
       %a{ :href => "/add_account" } Add An Account.
     - else
-      %img.img-button{ :src => "/button/#{@user.external_id}.svg" }
+      %center
+        %span#badge
+          %a{ :href => "/rating/#{@user.external_id}" }
+            %img{ :height => "40px", :src => "/button/#{@user.external_id}.svg" }
+        %button#ccbtn.btn.btn-warning{"data-clipboard-target" => "#badge", "data-icon" => "copy", :title => "Copy Button Code"}
+
+      :javascript
+        $(document).ready(function(){
+          var clipboard = new Clipboard('.btn',{
+            text: function(trigger) {
+              return $('#badge').html();
+            }
+          });
+
+          clipboard.on('success', function(e) {
+            $('#ccbtn').css("background-color", "#58dc6e");
+            e.clearSelection();
+          });
+        });
+
       %table.w-100p.colorit
         %thead
           %tr

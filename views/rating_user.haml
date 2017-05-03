@@ -1,0 +1,12 @@
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Bonität
+  .panel-body
+    - if @user.accounts.size == 0
+      No Accounts, No Credit Rating.
+      %a{ :href => "/add_account" } Add An Account.
+    - else
+      Rating for
+      = @user.name
+      is
+      = @user.rating
