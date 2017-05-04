@@ -27,12 +27,12 @@ gem 'launchy'
 
 gem 'adtekio_utilities', :github => "adtekio/utilities"
 gem 'jwe'
-gem 'iban-tools'
+gem 'iban-tools', :github => 'alphasights/iban-tools', :ref => '534a06be92c049c95923cd555a920459762e1d2c'
 gem 'mailchimp'
 
 group :development do
   gem 'html2haml'
-  gem 'dotenv', :git => 'https://github.com/gorenje/dotenv.git', :branch => 'squaure_brackets'
+  gem 'dotenv', :github => 'gorenje/dotenv', :branch => 'squaure_brackets'
   gem 'sass'
   gem 'rerun'
 end

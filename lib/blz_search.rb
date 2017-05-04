@@ -4,8 +4,8 @@ module BlzSearch
   extend self
 
   def find_bank(iban)
+    return nil unless IBANTools::IBAN.valid?(iban.code)
     return nil if iban.country_code != 'DE'
-    return nil unless iban.valid?
 
     page = mechanize_agent.get(BlzSearchUrls[iban.country_code])
 

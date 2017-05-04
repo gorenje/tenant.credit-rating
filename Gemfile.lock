@@ -5,7 +5,14 @@ GIT
     adtekio_utilities (0.0.1)
 
 GIT
-  remote: https://github.com/gorenje/dotenv.git
+  remote: git://github.com/alphasights/iban-tools.git
+  revision: 534a06be92c049c95923cd555a920459762e1d2c
+  ref: 534a06be92c049c95923cd555a920459762e1d2c
+  specs:
+    iban-tools (1.0.0)
+
+GIT
+  remote: git://github.com/gorenje/dotenv.git
   revision: a546053e896cdb44b1341c453f8e3ed93aab6db4
   branch: squaure_brackets
   specs:
@@ -77,7 +84,6 @@ GEM
     httparty (0.14.0)
       multi_xml (>= 0.5.2)
     i18n (0.8.1)
-    iban-tools (1.1.0)
     json (1.8.6)
     jwe (0.2.0)
     kgio (2.11.0)
@@ -194,7 +200,7 @@ DEPENDENCIES
   foreman
   haml
   html2haml
-  iban-tools
+  iban-tools!
   json
   jwe
   launchy

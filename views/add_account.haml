@@ -64,9 +64,14 @@
             .col-md-4 IBAN:
             .col-md-6
               %input#iban{:size => "40", :type => "text" }/
+            .col-md-2
               %span#ibangood.td-n.mr-5px.brad-100p.bgc-green.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "checkmark5"}
               %span#ibanbad.td-n.mr-5px.brad-100p.bgc-red.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "cross4"}
               %img#ibanwait.td-n.mr-5px.brad-100p.bgc-orange.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{:src => "/images/loader.svg"}
+          .row
+            %p
+            .col-md-4 Bank:
+            .col-md-6
               %span#bankname
           .row
             %p

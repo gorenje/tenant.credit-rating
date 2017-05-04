@@ -1,6 +1,6 @@
 post '/iban/check' do
   content_type :json
-  { :r => IBANTools::IBAN.new(params[:iban]).valid? }.to_json
+  { :r => IBANTools::IBAN.valid?(params[:iban]) }.to_json
 end
 
 post '/iban/bankname' do
