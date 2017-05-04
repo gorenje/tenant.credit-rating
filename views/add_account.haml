@@ -61,7 +61,16 @@
         %form{ :onsubmit => "encrypt(false); return false;" }
           .row
             %p
-            .col-md-4 Username:
+            .col-md-4 IBAN:
+            .col-md-6
+              %input#iban{:size => "40", :type => "text" }/
+              %span#ibangood.td-n.mr-5px.brad-100p.bgc-green.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "checkmark5"}
+              %span#ibanbad.td-n.mr-5px.brad-100p.bgc-red.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "cross4"}
+              %img#ibanwait.td-n.mr-5px.brad-100p.bgc-orange.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{:src => "/images/loader.svg"}
+              %span#bankname
+          .row
+            %p
+            .col-md-4 Name:
             .col-md-6
               %input#user{:size => "40", :type => "text" }/
           .row
@@ -81,23 +90,38 @@
             .col-md-6
               %input.btn.btn-warning{:type => "submit", :value => "Submit"}
 
-/ don't show the tan dialog
-- if 1 == 0
-  .panel.panel-primary
-    .panel-heading
-      %h3.panel-title Prepare challenge response (TAN)
-    .panel-body
-      .row
-        .col-md-6
-          %form{ :onsubmit => "encrypt(true); return false;" }
-            .row
-              %p
-              .col-md-4 TAN:
-              .col-md-6
-                %input#tan{:size => "40", :type => "text"}/
-            %p
-            .row
-              %p
-              .col-md-4
-              .col-md-6
-                %input.btn.btn-warning{:type => "submit", :value => "Submit"}
+:javascript
+  $(document).ready(function(){
+    $('#ibangood').hide();
+    $('#ibanbad').hide();
+    $('#ibanwait').hide();
+
+    $('#iban').on('change', function(){
+      $('#ibangood').hide();
+      $('#ibanbad').hide();
+      $('#ibanwait').show();
+
+      $.ajax({
+        url: '/iban/check',
+        method: 'post',
+        dataType: 'json',
+        data: { iban: $('#iban').val() }
+      }).done(function(data){
+        if ( data["r"] ) {
+           $('#ibangood').show();
+           $('#bankname').html("<img src='/images/loader.svg'>");
+           $.ajax({
+           url: '/iban/bankname',
+           method: 'post',
+           dataType: 'json',
+           data: { iban: $('#iban').val() }
+           }).done(function(data){
+             $('#bankname').html(data["r"]);
+           });
+        } else {
+           $('#ibanbad').show();
+        }
+        $('#ibanwait').hide();
+      });
+    });
+  });

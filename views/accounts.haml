@@ -6,6 +6,8 @@
       No Account available,
       %a{ :href => "/add_account" } add account.
     - else
+      %a{ :href => "/add_account" } Add Account.
+      %hr
       = haml :"_js_tablesorter", :locals => {:tableid => "acctable" }
       %table#acctable.colorit.w-100p.tablesorter
         %thead
