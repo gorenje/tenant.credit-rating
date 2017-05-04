@@ -36,6 +36,9 @@
                   %span{ "data-icon" => "user2" }
                 %ul.dropdown-menu
                   %li
+                    %a{:href => "/profile" }
+                      %strong= User.find(session[:user_id]).name
+                  %li
                     %a{:href => "/add_account"} Add Bank Account
                   %li
                     %a{:href => "/figo/login"} Connect with Figo

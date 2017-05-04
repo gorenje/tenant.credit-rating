@@ -17,4 +17,8 @@ class Account < ActiveRecord::Base
   def iban_valid?
     IBANTools::IBAN.valid?(iban)
   end
+
+  def iban_obj
+    IBANTools::IBAN.new(iban)
+  end
 end

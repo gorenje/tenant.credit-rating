@@ -16,15 +16,21 @@
             %th Account Number
             %th Bank Code
             %th Iban
-            %th Type
             %th.txa-r Balance
+            %th Actions
         %tbody
           - @accounts.each do |account|
             %tr
               %td= account.owner
-              %td
-                %a{:href => "/transactions/#{account.id}"}= account.account_number
-              %td= account.bank.figo_bank_code
-              %td= account.iban
-              %td= account.account_type
+              %td= account.account_number
+              %td= account.bank.figo_bank_name || account.bank.iban_bank_name
+              %td= account.iban_obj.prettify
               %td.txa-r.ws-nw= currency(account.last_known_balance, :unit => account.currency)
+              %td
+                .row
+                  .col-md-1
+                    %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "format_list_bulleted", :title => "View Transactions", :href => "/transactions/#{account.id}" }
+                  .col-md-1
+                    %a.td-n.mr-5px.brad-100p.bgc-red-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "cross4", :title => "Delete Account", :href => "/account/delete/#{account.id}" }
+                  .col-md-1
+                    %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "backup", :title => "Add Transactions", :href => "/add_transactions/#{account.id}" }

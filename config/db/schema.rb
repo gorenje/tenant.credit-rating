@@ -42,11 +42,14 @@ ActiveRecord::Schema.define(version: 20170425152022) do
     t.string   "figo_bank_id"
     t.string   "figo_bank_code"
     t.string   "figo_bank_name"
+    t.string   "iban_bank_code"
+    t.string   "iban_bank_name"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
   end
 
   add_index "banks", ["figo_bank_id"], name: "index_banks_on_figo_bank_id", using: :btree
+  add_index "banks", ["iban_bank_code"], name: "index_banks_on_iban_bank_code", using: :btree
 
   create_table "transactions", force: :cascade do |t|
     t.string   "figo_transaction_id"

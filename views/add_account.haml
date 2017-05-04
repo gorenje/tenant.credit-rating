@@ -1,52 +1,24 @@
-%script{:src => "/javascript/enc/jose.js"}
-%script{:src => "/javascript/enc/yahoo-min.js"}
-%script{:src => "/javascript/enc/jsbn.js"}
-%script{:src => "/javascript/enc/jsbn2.js"}
-%script{:src => "/javascript/enc/prng4.js"}
-%script{:src => "/javascript/enc/rng.js"}
-%script{:src => "/javascript/enc/base64.js"}
-%script{:src => "/javascript/enc/rsa.js"}
-%script{:src => "/javascript/enc/rsa2.js"}
-%script{:src => "/javascript/enc/ec.js"}
-%script{:src => "/javascript/enc/ec-patch.js"}
-%script{:src => "/javascript/enc/webcrypto-shim.js"}
-%script{:src => "/javascript/enc/asn1hex-1.1.min.js"}
-%script{:src => "/javascript/enc/base64x-1.1.min.js"}
-%script{:src => "/javascript/enc/ecdsa-modified-1.0.min.js"}
-%script{:src => "/javascript/enc/keyutil-1.0.min.js"}
-/[if lt IE 9]
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-:javascript
-  function encrypt(tan) {
-    var keyObj = KEYUTIL.getKey("#{FigoPublicKey}");
-    var jwk = KEYUTIL.getJWKFromKey(keyObj);
+= haml :"_js_encrypt"
 
-    var cryptographer = new Jose.WebCryptographer();
-    var rsa_key = Jose.Utils.importRsaPublicKey(jwk, "RSA-OAEP");
-    cryptographer.setContentEncryptionAlgorithm("A256CBC-HS512");
-    var encrypter = new JoseJWE.Encrypter(cryptographer, rsa_key);
-    var creds = "";
-    if (tan == false) {
-      creds = JSON.stringify([$('#user').val(),$('#additional_pin').val(),$('#pin').val()]);
-      encrypter.encrypt(creds).then(function(result) {
-        document.getElementById("enc_token_field").value = result;
-        document.getElementById("send_data").submit();
-      }).catch(function(err){
-        console.error(err);
-      });
-    }
-    else {
-      creds = JSON.stringify($('#tan').val());
-      encrypter.encrypt(creds).then(function(result) {
-        document.getElementById("creds_type").value = "tan";
-        document.getElementById("enc_token_field").value = result;
-        document.getElementById("send_data").submit();
-      }).catch(function(err){
-        console.error(err);
-      });
-    }
+:javascript
+  function encrypt() {
+    var data = JSON.stringify([$('#user').val(),$('#additional_pin').val(),
+                               $('#pin').val()]);
+    $('#ibanvalue').val($('#iban').val());
+    $('#uservalue').val($('#user').val());
+
+    encrypt_data(data, "#{FigoPublicKey}", function(result){
+      document.getElementById("enc_token_field").value = result;
+      document.getElementById("send_data").submit();
+    });
   }
+
+- if @message
+  .panel.panel-primary
+    .panel-heading
+      %h3.panel-title Response
+    .panel-body
+      = @message
 
 .panel.panel-primary
   .panel-heading
@@ -55,10 +27,11 @@
     .row
       .col-md-6
         %form#send_data{ :method => :post, :action => "/add_account" }
-          %input#creds_type{ :type => :hidden, :name => "creds_type", :value => "account" }
-          %input#enc_token_field{:type=>:hidden, :name => "creds", :value => "none"}
+          %input#enc_token_field{:type=>:hidden, :name => "creds", :value => ""}
+          %input#ibanvalue{:type=>:hidden, :name => "iban", :value => ""}
+          %input#uservalue{:type=>:hidden, :name => "user", :value => ""}
 
-        %form{ :onsubmit => "encrypt(false); return false;" }
+        %form{ :onsubmit => "encrypt(); return false;" }
           .row
             %p
             .col-md-4 IBAN:
@@ -116,10 +89,10 @@
            $('#ibangood').show();
            $('#bankname').html("<img src='/images/loader.svg'>");
            $.ajax({
-           url: '/iban/bankname',
-           method: 'post',
-           dataType: 'json',
-           data: { iban: $('#iban').val() }
+             url: '/iban/bankname',
+             method: 'post',
+             dataType: 'json',
+             data: { iban: $('#iban').val() }
            }).done(function(data){
              $('#bankname').html(data["r"]);
            });

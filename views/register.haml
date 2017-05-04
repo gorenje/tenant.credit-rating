@@ -1,50 +1,12 @@
-%script{:src => "/javascript/enc/jose.js"}
-%script{:src => "/javascript/enc/yahoo-min.js"}
-%script{:src => "/javascript/enc/jsbn.js"}
-%script{:src => "/javascript/enc/jsbn2.js"}
-%script{:src => "/javascript/enc/prng4.js"}
-%script{:src => "/javascript/enc/rng.js"}
-%script{:src => "/javascript/enc/base64.js"}
-%script{:src => "/javascript/enc/rsa.js"}
-%script{:src => "/javascript/enc/rsa2.js"}
-%script{:src => "/javascript/enc/ec.js"}
-%script{:src => "/javascript/enc/ec-patch.js"}
-%script{:src => "/javascript/enc/webcrypto-shim.js"}
-%script{:src => "/javascript/enc/asn1hex-1.1.min.js"}
-%script{:src => "/javascript/enc/base64x-1.1.min.js"}
-%script{:src => "/javascript/enc/ecdsa-modified-1.0.min.js"}
-%script{:src => "/javascript/enc/keyutil-1.0.min.js"}
-/[if lt IE 9]
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+= haml :"_js_encrypt"
+
 :javascript
-  function encrypt(tan) {
-    var keyObj = KEYUTIL.getKey("#{ENV['RSA_PUBLIC_KEY']}");
-    var jwk = KEYUTIL.getJWKFromKey(keyObj);
-
-    var cryptographer = new Jose.WebCryptographer();
-    var rsa_key = Jose.Utils.importRsaPublicKey(jwk, "RSA-OAEP");
-    cryptographer.setContentEncryptionAlgorithm("A256CBC-HS512");
-    var encrypter = new JoseJWE.Encrypter(cryptographer, rsa_key);
-    var creds = "";
-
-    if (tan == false) {
-      creds = JSON.stringify({email: $('#user').val(), password: $('#pin').val(), type: 'login'});
-      encrypter.encrypt(creds).then(function(result) {
-        document.getElementById("enc_token_field").value = result;
-        document.getElementById("send_data").submit();
-      }).catch(function(err){
-        console.error(err);
-      });
-    } else {
-      creds = JSON.stringify({email: $('#email').val(), name: $('#name').val(), type: 'register', password1: $('#pword').val(), password2: $('#pword2').val()});
-      encrypter.encrypt(creds).then(function(result) {
-        document.getElementById("enc_token_field").value = result;
-        document.getElementById("send_data").submit();
-      }).catch(function(err){
-        console.error(err);
-      });
-    }
+  function encrypt() {
+    var data = JSON.stringify({email: $('#email').val(), name: $('#name').val(), type: 'register', password1: $('#pword').val(), password2: $('#pword2').val()});
+    encrypt_data(data, "#{ENV['RSA_PUBLIC_KEY']}", function(result){
+      document.getElementById("enc_token_field").value = result;
+      document.getElementById("send_data").submit();
+    });
   }
 
 - if @message
@@ -62,7 +24,7 @@
       .col-md-6
         %form#send_data{ :method => :post, :action => "/login" }
           %input#enc_token_field{:type=>:hidden, :name => "creds", :value => "none"}
-        %form{ :onsubmit => "encrypt(true); return false;" }
+        %form{ :onsubmit => "encrypt(); return false;" }
           .row
             %p
             .col-md-4 Name

@@ -3,7 +3,7 @@ require 'mechanize'
 module BlzSearch
   extend self
 
-  def find_bank(iban)
+  def find_bank_name(iban)
     return nil unless IBANTools::IBAN.valid?(iban.code)
     return nil if iban.country_code != 'DE'
 

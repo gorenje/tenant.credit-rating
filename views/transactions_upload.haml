@@ -1,0 +1,74 @@
+= haml :"_js_encrypt"
+
+:javascript
+  function encrypt(data) {
+    var jsondata = JSON.stringify({filedata: data});
+
+    encrypt_data(jsondata, "#{ENV['RSA_PUBLIC_KEY']}", function(result){
+      document.getElementById("enc_token_field").value = result;
+      document.getElementById("send_data").submit();
+    });
+  }
+
+  function handleFileSelect()
+    {
+      if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+        alert('The File APIs are not fully supported in this browser.');
+        return;
+      }
+
+      input = document.getElementById('fileinput');
+
+      if (!input) {
+        alert("Um, couldn't find the fileinput element.");
+      }
+      else if (!input.files) {
+        alert("This browser doesn't seem to support the `files` property of file inputs.");
+      }
+      else if (!input.files[0]) {
+        alert("Please select a file before clicking 'Load'");
+      }
+      else {
+        var file = input.files[0];
+        var fr = new FileReader();
+        fr.onload = receivedText;
+        fr.readAsDataURL(file);
+      }
+    }
+
+    function receivedText(e) {
+      encrypt(e.target.result);
+    }
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Account Details
+  .panel-body
+    %table.colorit.w-100p
+      %tr
+        %th Account Owner
+        %td= @account.owner
+      %tr
+        %th Account Number
+        %td= @account.account_number
+      %tr
+        %th Bank Name
+        %td= @account.bank.figo_bank_name || @account.bank.iban_bank_name
+      %tr
+        %th IBAN
+        %td= @account.iban
+      %tr
+        %th Balance
+        %td
+          = currency(@account.last_known_balance, :unit => @account.currency)
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Upload
+  .panel-body
+    %form#send_data{ :method => :post, :action => "/add_transactions/#{@account.id}" }
+      %input#enc_token_field{:type => :hidden, :name => "creds"}
+
+    %form
+      %input#fileinput{ :type => "file", :name => "file" }
+      %input{ :type=>'button', :id=>'btnLoad', :value=>'Load', :onclick=>'handleFileSelect();'}

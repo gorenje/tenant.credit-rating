@@ -46,6 +46,9 @@ class InitialTables < ActiveRecord::Migration
       t.string  :figo_bank_code
       t.string  :figo_bank_name
 
+      t.string  :iban_bank_code, :index => true
+      t.string  :iban_bank_name
+
       t.timestamps :null => false
     end
 
