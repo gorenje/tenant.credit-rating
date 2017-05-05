@@ -22,6 +22,10 @@ class Transaction < ActiveRecord::Base
   def electric?
     purpose =~ /strom/i
   end
+
+  def to_f
+    amount.to_f
+  end
 end
 
 class FigoTransaction < Transaction

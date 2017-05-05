@@ -4,31 +4,24 @@ get '/api/account/:filter/:account_id.json' do
       xcnt, xlookup  = -1,{}
       data = [{ "name" => "Ingoing",  "color" => "green",     "data" => [], },
               { "name" => "Outgoing", "color" => "red",       "data" => [], },
-              { "name" => "Total",    "color" => "steelblue", "data" => [] }]
+              { "name" => "Total",    "color" => "steelblue", "data" => []  }]
 
-      get_account.transactions.select do |trans|
-        case params[:filter]
-        when "atm"      then trans.atm?
-        when "rent"     then trans.rent?
-        when "electric" then trans.electric?
-        else true
-        end
-      end.group_by do |transaction|
-        transaction.booking_date.strftime("%Y%m")
-      end.sort_by { |a,_| a.to_i }.map do |month, transactions|
-        xcnt+=1
+      get_account.
+        cluster_transactions_by_month(params[:filter]).
+        sort_by { |a,_| a.to_i }.
+        each do |month, details|
+
+        xcnt += 1
         xlookup[xcnt] = "%s/%s" % [month[4..6], month[0..3]]
 
         data[0]["data"] << { "x" => xcnt,
-          "y" => (transactions.select(&:credit?).
-                  map { |t| t.amount.to_f }.sum.round(2))
+          "y" => details["credit"].map(&:to_f).sum.round(2)
         }
         data[1]["data"] << { "x" => xcnt,
-          "y" => (transactions.select(&:debit?).
-                  map { |t| t.amount.to_f }.sum.round(2))
+          "y" => details["debit"].map(&:to_f).sum.round(2)
         }
         data[2]["data"] << { "x" => xcnt,
-          "y" => transactions.map {|t| t.amount.to_f}.sum.round(2)
+          "y" => details["all"].map(&:to_f).sum.round(2)
         }
       end
 
