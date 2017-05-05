@@ -11,7 +11,11 @@
         %td= @account.account_number
       %tr
         %th Bank Nane
-        %td= @account.bank.figo_bank_name || @account.bank.iban_bank_name
+        %td
+          = @account.bank.figo_bank_name || @account.bank.iban_bank_name
+          - if url = @account.bank.login_url
+            %a{"data-icon" => "link-external", :href => url, :target => "_blank" }
+
       %tr
         %th IBAN
         %td= @account.iban

@@ -1,9 +1,11 @@
 post '/iban/check' do
-  content_type :json
-  { :r => IBANTools::IBAN.valid?(params[:iban]) }.to_json
+  return_json do
+    { :r => IBANTools::IBAN.valid?(params[:iban]) }
+  end
 end
 
 post '/iban/bankname' do
-  content_type :json
-  { :r => BlzSearch.find_bank_name(IBANTools::IBAN.new(params[:iban])) }.to_json
+  return_json do
+    { :r => BlzSearch.find_bank_name(IBANTools::IBAN.new(params[:iban])) }
+  end
 end

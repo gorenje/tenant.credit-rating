@@ -4,6 +4,15 @@ module ViewHelpers
       !ENV['HOSTS_WITH_NO_SSL'].split(",").map(&:strip).include?(request.host)
   end
 
+  def return_json
+    content_type :json
+    yield.to_json
+  end
+
+  def must_be_logged_in
+    redirect '/' unless is_logged_in?
+  end
+
   def view_exist?(path)
     File.exists?(File.dirname(__FILE__)+"/../views/#{path}.haml")
   end

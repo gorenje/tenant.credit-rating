@@ -10,4 +10,8 @@ class Bank < ActiveRecord::Base
       Bank.create(:iban_bank_code => blz,
                   :iban_bank_name => BlzSearch.find_bank_name(iban))
   end
+
+  def login_url
+    BankLoginURLs[iban_bank_code]
+  end
 end

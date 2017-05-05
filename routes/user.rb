@@ -1,5 +1,6 @@
 get '/profile' do
-  redirect '/' if session[:user_id].nil?
+  must_be_logged_in
+
   haml :profile
 end
 

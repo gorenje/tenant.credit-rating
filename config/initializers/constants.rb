@@ -16,3 +16,7 @@ TransactionFormats = {
   "csvmt940" => ["CsvMt940Handler", "CSV MT940 Format"],
   "csvcamt"  => ["UnknownFormat",   "CSV CAMT Format"],
 }
+
+BankLoginURLs = {
+  "10050000" => "https://www.berliner-sparkasse.de/de/home.html"
+}

@@ -1,5 +1,5 @@
 get '/transactions/:account_id' do
-  redirect '/' if session[:user_id].nil?
+  must_be_logged_in
 
   @account      = get_account
   @transactions = @account.transactions
@@ -7,8 +7,16 @@ get '/transactions/:account_id' do
   haml :transactions
 end
 
+get '/transactions/graph/:account_id' do
+  must_be_logged_in
+
+  @account = get_account
+
+  haml :transactions_graph
+end
+
 get '/add_transactions/:account_id' do
-  redirect '/' if session[:user_id].nil?
+  must_be_logged_in
 
   @account = get_account
 
@@ -16,7 +24,7 @@ get '/add_transactions/:account_id' do
 end
 
 post '/add_transactions/:account_id' do
-  redirect '/' if session[:user_id].nil?
+  must_be_logged_in
 
   key       = OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub(/\\n/, "\n"))
   data      = JSON(JWE.decrypt(params[:creds],                         key))
@@ -27,5 +35,5 @@ post '/add_transactions/:account_id' do
   importer = impClass.new(account)
   importer.import(file_data)
 
-  redirect "/transactions/#{account.id}"
+  redirect "/transactions/graph/#{account.id}"
 end

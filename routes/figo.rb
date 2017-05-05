@@ -1,12 +1,12 @@
 get '/figo/login' do
-  redirect "/" if session[:user_id].nil?
+  must_be_logged_in
 
   redirect $figo_connection.
     login_url("qweqwe", "accounts=ro transactions=ro balance=ro user=ro")
 end
 
 get '/callback*' do
-  redirect "/" if session[:user_id].nil?
+  must_be_logged_in
 
   if params['state'] != "qweqwe"
     raise Exception.new("Bogus redirect, wrong state")

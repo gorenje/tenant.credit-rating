@@ -5,7 +5,8 @@ get '/rating/:eid' do
 end
 
 get '/rating' do
-  redirect '/' if session[:user_id].nil?
+  must_be_logged_in
+
   @user = User.find(session[:user_id])
   haml :rating
 end

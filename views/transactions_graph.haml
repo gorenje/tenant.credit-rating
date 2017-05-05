@@ -1,0 +1,109 @@
+%link{:href => "//cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.css", :media => "screen", :rel => "stylesheet", :type => "text/css"}/
+%script{ :type=>"text/javascript", :src=>"//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" }
+%script{:type=>"text/javascript",:src => "//cdnjs.cloudflare.com/ajax/libs/d3/3.5.15/d3.min.js"}
+%script{:type=>"text/javascript",:src => "//cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.js"}
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Account Details
+  .panel-body
+    %table.colorit.w-100p
+      %tr
+        %th Account Owner
+        %td= @account.owner
+      %tr
+        %th Account Number
+        %td= @account.account_number
+      %tr
+        %th Bank Nane
+        %td
+          = @account.bank.figo_bank_name || @account.bank.iban_bank_name
+          - if url = @account.bank.login_url
+            %a{"data-icon" => "link-external", :href => url, :target => "_blank" }
+
+      %tr
+        %th IBAN
+        %td= @account.iban
+      %tr
+        %th Balance
+        %td
+          = currency(@account.last_known_balance, :unit => @account.currency)
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Graphs
+  .panel-body
+    #chart_container
+      #y_axis
+      #chart
+      #x_axis
+
+:css
+  #chart_container {
+          position: relative;
+          font-family: Arial, Helvetica, sans-serif;
+  }
+  #chart {
+          position: relative;
+          left: 40px;
+  }
+  .rickshaw_graph .y_ticks {
+          left: 0;
+  }
+  #y_axis {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 40px;
+  }
+  #x_axis {
+    padding-left: 40px;
+  }
+
+:javascript
+  function graphit(){
+    $.ajax({
+       url: "/api/account/#{@account.id}.json",
+       method: 'get',
+       dataType: 'json'
+    }).done(function(data){
+      var graph = new Rickshaw.Graph( {
+           element: document.querySelector("#chart"),
+           width: 500,
+           height: 200,
+           min: data.ymin,
+           max: data.ymax,
+           renderer: 'line',
+           series: [{
+             color: 'steelblue',
+             data: data.data
+           }]
+      });
+
+      new Rickshaw.Graph.Axis.Y( {
+         graph: graph,
+         orientation: 'left',
+         tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+         element: document.getElementById('y_axis')
+      });
+
+      var format = function(n) { return data.xlookup[n]; }
+      var x_ticks = new Rickshaw.Graph.Axis.X( {
+         graph: graph,
+         orientation: 'bottom',
+         element: document.getElementById('x_axis'),
+         pixelsPerTick: 200,
+         tickFormat: format
+      });
+
+      new Rickshaw.Graph.HoverDetail( {
+        graph: graph,
+        xFormatter: function(x) { return format(x); },
+        formatter: function(series, x, y) { return format(x) + ": " + y; }
+      });
+      graph.render();
+    });
+  }
+  $(document).ready(function(){
+    graphit();
+  });

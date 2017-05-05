@@ -1,5 +1,5 @@
 get '/accounts' do
-  redirect '/' if session[:user_id].nil?
+  must_be_logged_in
 
   @accounts = User.find(session[:user_id]).accounts
 
@@ -7,7 +7,7 @@ get '/accounts' do
 end
 
 get '/account/delete/:account_id' do
-  redirect '/' if session[:user_id].nil?
+  must_be_logged_in
 
   account = get_account
   account.transactions.delete_all
@@ -17,13 +17,14 @@ get '/account/delete/:account_id' do
 end
 
 get '/add_account' do
-  redirect '/' if session[:user_id].nil?
+  must_be_logged_in
+
   @message = session.delete(:message)
   haml :add_account
 end
 
 post '/add_account' do
-  redirect '/' if session[:user_id].nil?
+  must_be_logged_in
 
   user = User.find(session[:user_id])
   iban = if IBANTools::IBAN.valid?(params[:iban])
