@@ -43,9 +43,9 @@ class User < ActiveRecord::Base
       reload
     end
 
-    if rating.score != score
-      rating_histories << RatingHistory.create(:user => self,
-                                               :score => rating.score)
+    if rating.score != score || rating_histories.count == 0
+      rating_histories <<
+        RatingHistory.create(:user => self, :score => rating.score)
       rating.update(:score => score)
     end
   end

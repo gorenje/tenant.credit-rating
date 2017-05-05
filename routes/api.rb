@@ -29,11 +29,33 @@ get '/api/account/:filter/:account_id.json' do
       ymax,ymin = values.max || 0.0, values.min || 0.0
       { :data    => data,
         :xlookup => xlookup,
-        :ymax    => ymax + (ymax*0.1),
-        :ymin    => ymin + (ymin*0.1)
+        :ymax    => ymax > 0 ? ymax + (ymax*0.1) : ymax - (ymax*0.1),
+        :ymin    => ymin > 0 ? ymin - (ymin*0.1) : ymin + (ymin*0.1)
       }
     else
       []
     end
+  end
+end
+
+get '/api/rating/:eid.json' do
+  return_json do
+    user = User.find_by_external_id(params[:eid])
+    data = [{ "name" => "Rating",  "color" => "green", "data" => [] }]
+
+    xcnt, xlookup  = -1,{}
+    user.rating_histories.sort_by(&:id).each do |rating|
+      xcnt += 1
+      xlookup[xcnt] = rating.created_at.to_date
+      data[0]["data"] << { "x" => xcnt, "y" => rating.score }
+    end
+
+    values = data.map { |d| d["data"].map { |e| e["y"] }}.flatten
+    ymax,ymin = values.max || 0.0, values.min || 0.0
+    { :data    => data,
+      :xlookup => xlookup,
+      :ymax    => ymax > 0 ? ymax + (ymax*0.1) : ymax - (ymax*0.1),
+      :ymin    => ymin > 0 ? ymin - (ymin*0.1) : ymin + (ymin*0.1)
+    }
   end
 end
