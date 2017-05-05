@@ -2,7 +2,7 @@
 
 :javascript
   function encrypt(data) {
-    var jsondata = JSON.stringify({filedata: data});
+    var jsondata = JSON.stringify({filedata: data, format: $('input[name="format"]:checked').val()});
 
     encrypt_data(jsondata, "#{ENV['RSA_PUBLIC_KEY']}", function(result){
       document.getElementById("enc_token_field").value = result;
@@ -70,5 +70,14 @@
       %input#enc_token_field{:type => :hidden, :name => "creds"}
 
     %form
-      %input#fileinput{ :type => "file", :name => "file" }
-      %input{ :type=>'button', :id=>'btnLoad', :value=>'Load', :onclick=>'handleFileSelect();'}
+      .row
+        .col-md-2
+          %input#fileinput{ :type => "file", :name => "file" }
+      .row
+        - TransactionFormats.keys.each do |tkey|
+          .col-md-2
+            %input{:id => "fmt#{tkey}", :name => "format", :type => "radio", :value => tkey, :checked => (tkey == TransactionFormats.keys.first)}
+            %label{:for => "fmt#{tkey}" }= TransactionFormats[tkey].last
+      .row
+        .col-md-2
+          %input{ :type=>'button', :id=>'btnLoad', :value=>'Load', :onclick=>'handleFileSelect();'}

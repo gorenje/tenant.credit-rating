@@ -32,8 +32,9 @@ namespace :import do
         begin
           acc.transactions(dbacc.newest_transaction_id).each do |trans|
             dbtrans =
-              Transaction.where( :figo_transaction_id => trans.transaction_id,
-                                 :account             => dbacc).first_or_create
+              FigoTransaction.
+              where( :transaction_id => trans.transaction_id,
+                     :account        => dbacc).first_or_create
 
             dbtrans.update( :name             => trans.name,
                             :amount           => trans.amount.to_s,

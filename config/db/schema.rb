@@ -52,7 +52,7 @@ ActiveRecord::Schema.define(version: 20170425152022) do
   add_index "banks", ["iban_bank_code"], name: "index_banks_on_iban_bank_code", using: :btree
 
   create_table "transactions", force: :cascade do |t|
-    t.string   "figo_transaction_id"
+    t.string   "transaction_id"
     t.string   "name"
     t.decimal  "amount"
     t.string   "currency"
@@ -62,13 +62,15 @@ ActiveRecord::Schema.define(version: 20170425152022) do
     t.text     "booking_text"
     t.text     "purpose"
     t.text     "transaction_type"
+    t.hstore   "extras"
+    t.string   "classname"
     t.integer  "account_id"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
-  add_index "transactions", ["account_id", "figo_transaction_id"], name: "index_transactions_on_account_id_and_figo_transaction_id", using: :btree
-  add_index "transactions", ["figo_transaction_id"], name: "index_transactions_on_figo_transaction_id", using: :btree
+  add_index "transactions", ["account_id", "transaction_id"], name: "index_transactions_on_account_id_and_transaction_id", using: :btree
+  add_index "transactions", ["transaction_id"], name: "index_transactions_on_transaction_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email"

@@ -9,3 +9,10 @@ FigoPublicKey="-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgK
 
 BlzSearchUrls = {}
 BlzSearchUrls["DE"]="https://www.bundesbank.de/Navigation/DE/Service/Suche_BLZ/Erweitert/erweiterte_blz_suche_node.html"
+
+TransactionFormats = {
+  "mt940"    => ["Mt940Handler",    "MT 940 Format"],
+  "camt"     => ["UnknownFormat",   "CAMT Format"],
+  "csvmt940" => ["CsvMt940Handler", "CSV MT940 Format"],
+  "csvcamt"  => ["UnknownFormat",   "CSV CAMT Format"],
+}

@@ -48,4 +48,9 @@ module ViewHelpers
     yield if block_given?
     haml :"images/_#{name}.svg", :layout => false
   end
+
+  def get_account
+    Account.
+      where(:user_id => session[:user_id], :id => params[:account_id]).first
+  end
 end

@@ -53,7 +53,7 @@ class InitialTables < ActiveRecord::Migration
     end
 
     create_table :transactions do |t|
-      t.string  :figo_transaction_id, :index => true
+      t.string  :transaction_id, :index => true
       t.string  :name
       t.decimal :amount
       t.string  :currency
@@ -63,11 +63,13 @@ class InitialTables < ActiveRecord::Migration
       t.text    :booking_text
       t.text    :purpose
       t.text    :transaction_type
+      t.hstore  :extras
 
+      t.string :classname
       t.belongs_to :account
       t.timestamps :null => false
     end
 
-    add_index :transactions, [:account_id, :figo_transaction_id]
+    add_index :transactions, [:account_id, :transaction_id]
   end
 end

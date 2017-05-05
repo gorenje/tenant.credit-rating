@@ -10,8 +10,8 @@
         %th Account Number
         %td= @account.account_number
       %tr
-        %th Bank Code
-        %td= @account.bank.figo_bank_code
+        %th Bank Nane
+        %td= @account.bank.figo_bank_name || @account.bank.iban_bank_name
       %tr
         %th IBAN
         %td= @account.iban

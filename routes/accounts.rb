@@ -6,10 +6,12 @@ get '/accounts' do
   haml :accounts
 end
 
-get '/account/delete/:id' do
+get '/account/delete/:account_id' do
   redirect '/' if session[:user_id].nil?
 
-  User.find(session[:user_id]).accounts.where(:id => params[:id]).delete
+  account = get_account
+  account.transactions.delete_all
+  account.delete
 
   redirect '/accounts'
 end
