@@ -1,0 +1,24 @@
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Account Details
+  .panel-body
+    %table.colorit.w-100p
+      %tr
+        %th Account Owner
+        %td= @account.owner
+      %tr
+        %th Account Number
+        %td= @account.account_number
+      %tr
+        %th Bank Nane
+        %td
+          = @account.bank.figo_bank_name || @account.bank.iban_bank_name
+          - if url = @account.bank.login_url
+            %a{"data-icon" => "link-external",:href => url,:target => "_blank"}
+      %tr
+        %th IBAN
+        %td= @account.iban
+      %tr
+        %th Balance
+        %td
+          = currency(@account.last_known_balance, :unit => @account.currency)

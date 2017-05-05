@@ -1,66 +1,11 @@
 = haml :"_js_graph"
 
-.panel.panel-primary
-  .panel-heading
-    %h3.panel-title Account Details
-  .panel-body
-    %table.colorit.w-100p
-      %tr
-        %th Account Owner
-        %td= @account.owner
-      %tr
-        %th Account Number
-        %td= @account.account_number
-      %tr
-        %th Bank Nane
-        %td
-          = @account.bank.figo_bank_name || @account.bank.iban_bank_name
-          - if url = @account.bank.login_url
-            %a{"data-icon" => "link-external", :href => url, :target => "_blank" }
+= haml :"_account_panel"
 
-      %tr
-        %th IBAN
-        %td= @account.iban
-      %tr
-        %th Balance
-        %td
-          = currency(@account.last_known_balance, :unit => @account.currency)
-
-.panel.panel-primary
-  .panel-heading
-    %h3.panel-title Outgoing, Ingoing and Totals
-  .panel-body
-    #chart1.chart_container
-      .y_axis
-      .chart
-      .x_axis
-
-.panel.panel-primary
-  .panel-heading
-    %h3.panel-title ATMs
-  .panel-body
-    #chart2.chart_container
-      .y_axis
-      .chart
-      .x_axis
-
-.panel.panel-primary
-  .panel-heading
-    %h3.panel-title Rent
-  .panel-body
-    #chart3.chart_container
-      .y_axis
-      .chart
-      .x_axis
-
-.panel.panel-primary
-  .panel-heading
-    %h3.panel-title Electric
-  .panel-body
-    #chart4.chart_container
-      .y_axis
-      .chart
-      .x_axis
+= haml :"_graph_panel", :locals => {:title => "Outgoing, Ingoing and Totals", :id => "chart1" }
+= haml :"_graph_panel", :locals => {:title => "ATMs", :id => "chart2" }
+= haml :"_graph_panel", :locals => {:title => "Rent", :id => "chart3" }
+= haml :"_graph_panel", :locals => {:title => "Electric", :id => "chart4" }
 
 :javascript
   $(document).ready(function(){
