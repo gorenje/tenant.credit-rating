@@ -31,67 +31,71 @@
 
 .panel.panel-primary
   .panel-heading
-    %h3.panel-title Graphs
+    %h3.panel-title Outgoing, Ingoing and Totals
   .panel-body
-    #chart_container
-      #y_axis
-      #chart
-      #x_axis
+    #chart1.chart_container
+      .y_axis
+      .chart
+      .x_axis
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title ATMs
+  .panel-body
+    #chart2.chart_container
+      .y_axis
+      .chart
+      .x_axis
 
 :css
-  #chart_container {
-          position: relative;
-          font-family: Arial, Helvetica, sans-serif;
+  .chart_container {
+    width: 100%;
+    position: relative;
+    font-family: Arial, Helvetica, sans-serif;
   }
-  #chart {
-          position: relative;
-          left: 40px;
+  .chart {
+    position: relative;
+    left: 40px;
   }
-  .rickshaw_graph .y_ticks {
-          left: 0;
+  .y_axis {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
   }
-  #y_axis {
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          width: 40px;
-  }
-  #x_axis {
+  .x_axis {
     padding-left: 40px;
   }
 
 :javascript
-  function graphit(){
+  function graphit(elemid, url){
     $.ajax({
-       url: "/api/account/#{@account.id}.json",
+       url: url,
        method: 'get',
        dataType: 'json'
     }).done(function(data){
       var graph = new Rickshaw.Graph( {
-           element: document.querySelector("#chart"),
-           width: 500,
+           element: $(elemid+' .chart')[0],
+           width: 800,
            height: 200,
            min: data.ymin,
            max: data.ymax,
            renderer: 'line',
-           series: [{
-             color: 'steelblue',
-             data: data.data
-           }]
+           series: data.data
       });
 
       new Rickshaw.Graph.Axis.Y( {
          graph: graph,
          orientation: 'left',
          tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-         element: document.getElementById('y_axis')
+         element: $(elemid+' .y_axis')[0],
       });
 
       var format = function(n) { return data.xlookup[n]; }
       var x_ticks = new Rickshaw.Graph.Axis.X( {
          graph: graph,
          orientation: 'bottom',
-         element: document.getElementById('x_axis'),
+         element: $(elemid+' .x_axis')[0],
          pixelsPerTick: 200,
          tickFormat: format
       });
@@ -99,11 +103,15 @@
       new Rickshaw.Graph.HoverDetail( {
         graph: graph,
         xFormatter: function(x) { return format(x); },
-        formatter: function(series, x, y) { return format(x) + ": " + y; }
+        formatter: function(series, x, y) {
+          return series.name + " for " + format(x) + ": " + y;
+        }
       });
       graph.render();
     });
   }
+
   $(document).ready(function(){
-    graphit();
+    graphit('#chart1', "/api/account/#{@account.id}.json");
+    graphit('#chart2', "/api/account/atm/#{@account.id}.json");
   });
