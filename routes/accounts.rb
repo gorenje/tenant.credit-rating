@@ -18,7 +18,7 @@ end
 
 get '/add_account' do
   redirect '/' if session[:user_id].nil?
-
+  @message = session.delete(:message)
   haml :add_account
 end
 
@@ -29,13 +29,13 @@ post '/add_account' do
   iban = if IBANTools::IBAN.valid?(params[:iban])
            IBANTools::IBAN.new(params[:iban])
          else
-           @message = "IBAN: #{params[:iban]} is not valid"
-           haml :add_account
+           session[:message] = "IBAN: #{params[:iban]} is not valid"
+           redirect "/add_account"
          end
 
   if iban.country_code != "DE"
-    @message = "IBAN: Is not a german account."
-    haml :add_account
+    session[:message] = "IBAN: #{params[:iban]} is not a german account"
+    redirect "/add_account"
   end
 
   account = user.accounts.where(:iban => iban.code).first ||
