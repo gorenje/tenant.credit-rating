@@ -2,6 +2,8 @@ class User < ActiveRecord::Base
   has_many :accounts
   has_many :transactions, :through => :accounts
   has_many :banks, :through => :accounts
+  has_many :rating_histories
+  has_one :rating
 
   include ModelHelpers::CredentialsHelper
 
@@ -31,10 +33,21 @@ class User < ActiveRecord::Base
     end
   end
 
-  def rating
-    RatingFactors.map do |_,factor|
+  def compute_rating
+    score = RatingFactors.map do |_,factor|
       factor[:proc].call(self).last
     end.sum
+
+    if rating.nil?
+      Rating.create(:user => self, :score => score)
+      reload
+    end
+
+    if rating.score != score
+      rating_histories << RatingHistory.create(:user => self,
+                                               :score => rating.score)
+      rating.update(:score => score)
+    end
   end
 
   def external_id

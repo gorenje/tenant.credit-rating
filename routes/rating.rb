@@ -1,5 +1,6 @@
 get '/rating/:eid' do
   @user = User.find_by_external_id(params[:eid])
+  @user.compute_rating if @user.rating.nil?
   haml :rating_user
 end
 

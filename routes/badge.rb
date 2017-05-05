@@ -7,7 +7,8 @@ end
 get '/badge/:eid.svg' do
   generate_svg "button" do
     user = User.find_by_external_id(params[:eid])
-    @rating = user.rating
+    user.compute_rating if user.rating.nil?
+    @rating = user.rating.score
     @clr = @rating > 0 ? "green" : (@rating == 0 ? "orange" : "black")
   end
 end

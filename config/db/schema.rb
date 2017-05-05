@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170425152022) do
+ActiveRecord::Schema.define(version: 20170505092352) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,20 @@ ActiveRecord::Schema.define(version: 20170425152022) do
 
   add_index "banks", ["figo_bank_id"], name: "index_banks_on_figo_bank_id", using: :btree
   add_index "banks", ["iban_bank_code"], name: "index_banks_on_iban_bank_code", using: :btree
+
+  create_table "rating_histories", force: :cascade do |t|
+    t.integer  "score"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ratings", force: :cascade do |t|
+    t.integer  "score"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "transactions", force: :cascade do |t|
     t.string   "transaction_id"
