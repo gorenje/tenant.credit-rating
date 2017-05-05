@@ -14,6 +14,14 @@ class Transaction < ActiveRecord::Base
   def atm?
     name =~ /^GA/
   end
+
+  def rent?
+    purpose =~ /miete/i
+  end
+
+  def electric?
+    purpose =~ /strom/i
+  end
 end
 
 class FigoTransaction < Transaction
