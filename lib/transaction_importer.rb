@@ -14,13 +14,13 @@ module TransactionImporter
 
   class UnknownFormat < Handler
     def import(data)
-      raise Exception.new("Unsupported Format")
+      raise ErrorPage::FormatNotSupported.new("Unknown Format")
     end
   end
 
   class CsvMt940Handler < Handler
     def import(data)
-      raise Exception.new("Unsupported Format")
+      raise ErrorPage::FormatNotSupported.new("Unsupported Format: CSV MT940")
 
       CSV.new(file_data.force_encoding('ISO-8859-1'),
               :headers => :first_line, :col_sep => ";", :quote_char => '"').
