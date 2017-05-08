@@ -3,6 +3,19 @@ class Transaction < ActiveRecord::Base
 
   self.inheritance_column = :classname
 
+  class << self
+    def filter(filter = :nil)
+      self.select do |trans|
+        case filter.to_s
+        when "atm"      then trans.atm?
+        when "rent"     then trans.rent?
+        when "electric" then trans.electric?
+        else true
+        end
+      end
+    end
+  end
+
   def credit?
     amount.to_f >= 0
   end
