@@ -8,5 +8,6 @@ get '/rating' do
   must_be_logged_in
 
   @user = User.find(session[:user_id])
+  @user.compute_rating
   haml :rating
 end

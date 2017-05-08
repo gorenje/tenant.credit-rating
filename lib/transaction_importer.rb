@@ -34,6 +34,11 @@ module TransactionImporter
     def import(data)
       Cmxl.parse(data, :encoding => "ISO-8859-1").each do |stmt|
         stmt.transactions.each do |trans|
+          if cb = stmt.closing_balance
+            @account.update(:currency           => cb.currency,
+                            :last_known_balance => cb.amount)
+          end
+
           dbtrans = Mt940Transaction.
             where( :transaction_id => trans.sha,
                    :account        => @account).first_or_create

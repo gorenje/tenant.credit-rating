@@ -5,6 +5,12 @@ class Account < ActiveRecord::Base
 
   include ModelHelpers::CredentialsHelper
 
+  class << self
+    def in_credit
+      where("last_known_balance > 0")
+    end
+  end
+
   def newest_transaction_id
     transactions.pluck(:transaction_id).
       sort_by { |str| str =~ /([0-9]+)$/ && $1.to_i }.last

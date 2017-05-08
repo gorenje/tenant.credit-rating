@@ -5,7 +5,7 @@ class Transaction < ActiveRecord::Base
 
   class << self
     def filter(filter = :nil)
-      self.select do |trans|
+      select do |trans|
         case filter.to_s
         when "atm"      then trans.atm?
         when "rent"     then trans.rent?

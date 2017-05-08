@@ -34,9 +34,7 @@ class User < ActiveRecord::Base
   end
 
   def compute_rating
-    score = RatingFactors.map do |_,factor|
-      factor[:proc].call(self).last
-    end.sum
+    score = RatingEngine.new(self).rating
 
     if rating.nil?
       Rating.create(:user => self, :score => score)
@@ -117,5 +115,19 @@ class User < ActiveRecord::Base
 
   def generate_default_password
     ""
+  end
+
+  def last_transaction_date
+    accounts.map(&:transactions).map do |trans|
+      trans.order(:booking_date).last.booking_date
+    end.sort.last
+  end
+
+  def transactions_by_month(filter = nil)
+    accounts.map(&:transactions).map do |trans|
+      trans.filter(filter)
+    end.flatten.group_by do |tran|
+      tran.booking_date.strftime("%Y%m")
+    end
   end
 end
