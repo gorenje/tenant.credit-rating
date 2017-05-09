@@ -51,6 +51,9 @@ helpers do
 end
 
 before do
+  redirect("https://#{request.host}") if redirect_host_to_ssl?
+  redirect("https://www.#{request.host}") if redirect_host_to_www?
+
   unless session[:authenticated] ||
       request.path_info =~ /^\/(auth)/
     redirect '/auth'
