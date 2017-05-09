@@ -10,6 +10,7 @@ class Transaction < ActiveRecord::Base
         when "atm"      then trans.atm?
         when "rent"     then trans.rent?
         when "electric" then trans.electric?
+        when "salary"   then trans.salary?
         else true
         end
       end
@@ -34,6 +35,11 @@ class Transaction < ActiveRecord::Base
 
   def electric?
     purpose =~ /strom/i
+  end
+
+  def salary?
+    purpose =~ /gehalt/i ||
+      purpose =~ /lohn/
   end
 
   def to_f
