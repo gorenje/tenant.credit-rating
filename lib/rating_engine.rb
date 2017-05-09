@@ -15,6 +15,7 @@ class RatingEngine
         end
       end
     },
+
     :two => {
       :name => "Accounts Positive Balance",
       :desc => "How many accounts do you have that positive cash flow?",
@@ -30,6 +31,7 @@ class RatingEngine
         end
       end
     },
+
     :three => {
       :name => "Average Transactions per Account per Month",
       :desc => "How many transactions per account on average?",
@@ -44,6 +46,7 @@ class RatingEngine
         end
       end
     },
+
     :four => {
       :name => "Regularly rental payments",
       :desc => "Are rental payments being done regularly?",
@@ -66,7 +69,7 @@ class RatingEngine
       :name => "Last Transaction Date - how long ago (in days)?",
       :desc => "Are account date up-to-date?",
       :proc => Proc.new do |engine|
-        last_date   = engine.last_transaction_date
+        last_date   = engine.last_transaction_date || (Date.today-100)
         num_of_days = (Date.today - last_date).to_i
         case cnt = num_of_days
         when (0..3) then [cnt, 3]
