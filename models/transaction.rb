@@ -7,10 +7,11 @@ class Transaction < ActiveRecord::Base
     def filter(filter = :nil)
       select do |trans|
         case filter.to_s
-        when "atm"      then trans.atm?
-        when "rent"     then trans.rent?
-        when "electric" then trans.electric?
-        when "salary"   then trans.salary?
+        when "atm"        then trans.atm?
+        when "rent"       then trans.rent?
+        when "electric"   then trans.electric?
+        when "salary"     then trans.salary?
+        when "carsharing" then trans.carsharing?
         else true
         end
       end
@@ -42,6 +43,10 @@ class Transaction < ActiveRecord::Base
       purpose =~ /lohn/
   end
 
+  def carsharing?
+    (purpose =~ /moove/i && name == "DAIMLER AG") ||
+      (purpose =~ /DriveNow/i && name == "Billpay GmbH")
+  end
   def to_f
     amount.to_f
   end

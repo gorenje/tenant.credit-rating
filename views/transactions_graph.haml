@@ -7,6 +7,7 @@
 = haml :"_graph_panel", :locals => {:title => "Rent", :id => "chart3" }
 = haml :"_graph_panel", :locals => {:title => "Electric", :id => "chart4" }
 = haml :"_graph_panel", :locals => {:title => "Salary", :id => "chart5" }
+= haml :"_graph_panel", :locals => {:title => "Car Sharing", :id => "chart6" }
 
 :javascript
   $(document).ready(function(){
@@ -15,4 +16,5 @@
     graphit('#chart3', "/api/account/rent/#{@account.id}.json");
     graphit('#chart4', "/api/account/electric/#{@account.id}.json");
     graphit('#chart5', "/api/account/salary/#{@account.id}.json");
+    graphit('#chart6', "/api/account/carsharing/#{@account.id}.json");
   });
