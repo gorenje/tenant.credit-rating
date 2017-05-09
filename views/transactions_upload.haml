@@ -54,10 +54,5 @@
         .col-md-2
           %input#fileinput{ :type => "file", :name => "file" }
       .row
-        - TransactionFormats.keys.each do |tkey|
-          .col-md-2
-            %input{:id => "fmt#{tkey}", :name => "format", :type => "radio", :value => tkey, :checked => (tkey == TransactionFormats.keys.first)}
-            %label{:for => "fmt#{tkey}" }= TransactionFormats[tkey].last
-      .row
         .col-md-2
           %input{ :type=>'button', :id=>'btnLoad', :value=>'Load', :onclick=>'handleFileSelect();'}

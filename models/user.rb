@@ -113,14 +113,11 @@ class User < ActiveRecord::Base
     JSON.parse(to_json)
   end
 
-  def generate_default_password
-    ""
-  end
-
   def last_transaction_date
     accounts.map(&:transactions).map do |trans|
-      trans.order(:booking_date).last.booking_date
-    end.sort.last
+      tran = trans.order(:booking_date).last
+      tran && tran.booking_date
+    end.compact.sort.last
   end
 
   def transactions_by_month(filter = nil)

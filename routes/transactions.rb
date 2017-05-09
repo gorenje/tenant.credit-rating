@@ -27,11 +27,11 @@ post '/add_transactions/:account_id' do
   must_be_logged_in
 
   key       = OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub(/\\n/, "\n"))
-  data      = JSON(JWE.decrypt(params[:creds],                         key))
+  data      = JSON(JWE.decrypt(params[:creds], key))
   file_data = Base64::decode64(data["filedata"].sub(/^.+base64,/, ''))
   account   = get_account
 
-  impClass = TransactionImporter.handler_for(data["format"])
+  impClass = TransactionImporter.handler_for(file_data)
   importer = impClass.new(account)
   importer.import(file_data)
 

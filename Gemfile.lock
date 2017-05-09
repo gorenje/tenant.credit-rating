@@ -12,9 +12,16 @@ GIT
     iban-tools (1.0.0)
 
 GIT
+  remote: git://github.com/gorenje/bank_account_import.git
+  revision: 089a8631d76dcc0ba75251d78cf6516ba0cba3b7
+  specs:
+    bank_account_import (0.0.8)
+      iconv
+
+GIT
   remote: git://github.com/gorenje/cmxl.git
-  revision: 3358d2d1c9e5ab02a470f14b08d200277e4e05d9
-  ref: 3358d2d1c9e5ab02a470f14b08d200277e4e05d9
+  revision: 86653b4423bafe33fc91aa3ff86207f380a2854e
+  ref: 86653b4423bafe33fc91aa3ff86207f380a2854e
   specs:
     cmxl (0.2.0)
       rchardet19
@@ -92,6 +99,7 @@ GEM
     httparty (0.14.0)
       multi_xml (>= 0.5.2)
     i18n (0.8.1)
+    iconv (1.0.4)
     json (1.8.6)
     jwe (0.2.0)
     kgio (2.11.0)
@@ -204,6 +212,7 @@ DEPENDENCIES
   activerecord-import
   activerecord-postgis-adapter
   adtekio_utilities!
+  bank_account_import!
   cmxl!
   dotenv!
   figo

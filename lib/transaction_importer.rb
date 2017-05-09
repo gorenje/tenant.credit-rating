@@ -1,5 +1,6 @@
 require 'csv'
 require 'cmxl'
+require 'bank_account_import'
 
 module TransactionImporter
   extend self
@@ -7,30 +8,69 @@ module TransactionImporter
   class Handler
     attr_reader :account
 
+    class << self
+      attr_reader :subclasses
+
+      def inherited(sub)
+        (@subclasses ||= []) << sub
+      end
+
+      def supported?(csv_content)
+        false
+      end
+
+      def find_importer_for(file_content)
+        @subclasses.select { |klazz| klazz.supported?(file_content) }.first
+      end
+    end
+
     def initialize(account)
       @account = account
     end
   end
 
-  class UnknownFormat < Handler
-    def import(data)
-      raise ErrorPage::FormatNotSupported.new("Unknown Format")
+  class BankAccountImportHandler < Handler
+    def self.supported?(file_content)
+      !!BankAccountImport::BaseImporter.find_importer_for(file_content)
     end
-  end
 
-  class CsvMt940Handler < Handler
     def import(data)
-      raise ErrorPage::FormatNotSupported.new("Unsupported Format: CSV MT940")
+      imp_klazz = BankAccountImport::BaseImporter.find_importer_for(data)
+      details, transactions = imp_klazz.import_data(data)
 
-      CSV.new(file_data.force_encoding('ISO-8859-1'),
-              :headers => :first_line, :col_sep => ";", :quote_char => '"').
-        each do |a|
+      update_hash = {}.tap do |h|
+        h[:currency]           = details.currency || @account.currency
+        h[:iban]               = details.iban || @account.iban
+        h[:owner]              = details.owner || @account.owner
+        h[:last_known_balance] = details.closing_amount ||
+                                            @account.last_known_balance
+        h[:account_number]     = details.account_number ||
+                                            @account.account_number
+      end
+      @account.update(update_hash)
 
+      transactions.each do |trans|
+        dbtrans = Mt940Transaction.
+          where( :transaction_id => trans.sha,
+                 :account        => @account).first_or_create
+
+        dbtrans.update(:amount       => trans.amount,
+                       :currency     => trans.currency,
+                       :booking_date => trans.booking_date,
+                       :booking_text => trans.description,
+                       :purpose      => trans.type,
+                       :booked       => true,
+                       :value_date   => trans.entry_date,
+                       :extras       => trans.to_h)
       end
     end
   end
 
   class Mt940Handler < Handler
+    def self.supported?(file_content)
+      (Cmxl.parse(file_content, :encoding => "ISO-8859-1") && true) rescue false
+    end
+
     def import(data)
       Cmxl.parse(data, :encoding => "ISO-8859-1").each do |stmt|
         stmt.transactions.each do |trans|
@@ -57,7 +97,22 @@ module TransactionImporter
     end
   end
 
-  def handler_for(format)
-    eval((TransactionFormats[format] || ["UnknownFormat"]).first)
+  ##
+  ## Define this class as last since it supports all formats and
+  ## becomes the fallback handler if none of the others support the
+  ## file contents.
+  ##
+  class UnknownFormat < Handler
+    def self.supported?(file_content)
+      true
+    end
+
+    def import(data)
+      raise ErrorPage::FormatNotSupported.new("Unknown Format")
+    end
+  end
+
+  def handler_for(data)
+    Handler.find_importer_for(data)
   end
 end
