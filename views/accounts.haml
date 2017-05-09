@@ -16,7 +16,7 @@
             %th Account Number
             %th Bank Code
             %th Iban
-            %th.txa-r Balance
+            %th Balance
             %th Actions
         %tbody
           - @accounts.each do |account|
@@ -24,10 +24,14 @@
               %td= account.owner
               %td= account.account_number
               %td= account.bank.figo_bank_name || account.bank.iban_bank_name
-              %td= account.iban_obj.prettify
-              %td.txa-r.ws-nw= currency(account.last_known_balance, :unit => account.currency)
+              %td.ws-nw= account.iban_obj.prettify
+              %td.txa-r.ws-nw
+                &nbsp;
+                = currency(account.last_known_balance, :unit => account.currency)
               %td
                 .row
+                  .col-md-1
+                    &nbsp;
                   .col-md-1
                     %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "format_list_bulleted", :title => "View Transactions", :href => "/transactions/#{account.id}"  }
                   .col-md-1

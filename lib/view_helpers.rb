@@ -16,11 +16,7 @@ module ViewHelpers
 
   def return_json_if_logged_in
     content_type :json
-    if is_logged_in?
-      yield.to_json
-    else
-      [].to_json
-    end
+    (is_logged_in? ? yield : []).to_json
   end
 
   def must_be_logged_in

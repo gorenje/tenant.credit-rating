@@ -17,7 +17,7 @@
             %a{"data-icon" => "link-external",:href => url,:target => "_blank"}
       %tr
         %th IBAN
-        %td= @account.iban
+        %td= @account.iban_obj.prettify
       %tr
         %th Balance
         %td

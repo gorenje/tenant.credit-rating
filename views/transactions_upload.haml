@@ -51,8 +51,11 @@
 
     %form
       .row
-        .col-md-2
+        .col-md-6
           %input#fileinput{ :type => "file", :name => "file" }
       .row
-        .col-md-2
-          %input{ :type=>'button', :id=>'btnLoad', :value=>'Load', :onclick=>'handleFileSelect();'}
+        .col-md-6
+          &nbsp;
+      .row
+        .col-md-6
+          %input{ :type=>'button', :id=>'btnLoad', :value=>'Upload', :onclick=>'handleFileSelect();'}

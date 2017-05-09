@@ -38,6 +38,8 @@ module TransactionImporter
       imp_klazz = BankAccountImport::BaseImporter.find_importer_for(data)
       details, transactions = imp_klazz.import_data(data)
 
+      puts details.owner
+
       update_hash = {}.tap do |h|
         h[:currency]           = details.currency || @account.currency
         h[:iban]               = details.iban || @account.iban
@@ -54,14 +56,16 @@ module TransactionImporter
           where( :transaction_id => trans.sha,
                  :account        => @account).first_or_create
 
-        dbtrans.update(:amount       => trans.amount,
-                       :currency     => trans.currency,
-                       :booking_date => trans.booking_date,
-                       :booking_text => trans.description,
-                       :purpose      => trans.type,
-                       :booked       => true,
-                       :value_date   => trans.entry_date,
-                       :extras       => trans.to_h)
+        dbtrans.update(:amount            => trans.amount,
+                       :currency          => trans.currency,
+                       :booking_date      => trans.booking_date,
+                       :booking_text      => trans.description,
+                       :name              => trans.recipient,
+                       :purpose           => trans.description,
+                       :transaction_type  => trans.type,
+                       :booked            => true,
+                       :value_date        => trans.entry_date,
+                       :extras            => trans.to_h)
       end
     end
   end
