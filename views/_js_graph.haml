@@ -30,6 +30,14 @@
        method: 'get',
        dataType: 'json'
     }).done(function(data){
+      if ( data.empty ) {
+        $(elemid).parent().hide();
+        var text = $(elemid).parent().parent().find('.panel-title').html();
+        $(elemid).parent().parent().find('.panel-title').
+          html(text +": No transaction data");
+        return;
+      }
+
       var graph = new Rickshaw.Graph( {
            element: $(elemid+' .chart')[0],
            width: 800,

@@ -24,13 +24,19 @@ get '/api/account/:filter/:account_id.json' do
       }
     end
 
-    values = data.map { |d| d["data"].map { |e| e["y"] }}.flatten
-    ymax,ymin = values.max || 0.0, values.min || 0.0
-    { :data    => data,
-      :xlookup => xlookup,
-      :ymax    => ymax > 0 ? ymax + (ymax*0.1) : ymax - (ymax*0.1),
-      :ymin    => ymin > 0 ? ymin - (ymin*0.1) : ymin + (ymin*0.1)
-    }
+    data_point_count = data.map { |d| d["data"].count }.sum
+
+    if (data_point_count == 0)
+      { :empty => true }
+    else
+      values = data.map { |d| d["data"].map { |e| e["y"] }}.flatten
+      ymax,ymin = values.max || 0.0, values.min || 0.0
+      { :data    => data,
+        :xlookup => xlookup,
+        :ymax    => ymax > 0 ? ymax + (ymax*0.1) : ymax - (ymax*0.1),
+        :ymin    => ymin > 0 ? ymin - (ymin*0.1) : ymin + (ymin*0.1)
+      }
+    end
   end
 end
 

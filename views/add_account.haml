@@ -13,6 +13,16 @@
     });
   }
 
+  function encrypt_paypal() {
+    var data = JSON.stringify([$('#paypalname').val()]);
+    $('#emailvalue').val($('#email').val());
+    $('#username').val($('#paypalname').val());
+
+    encrypt_data(data, "#{FigoPublicKey}", function(result){
+      document.getElementById("send_paypal_data").submit();
+    });
+  }
+
 - if @message
   .panel.panel-primary
     .panel-heading
@@ -22,7 +32,7 @@
 
 .panel.panel-primary
   .panel-heading
-    %h3.panel-title Prepare bank credentials
+    %h3.panel-title Prepare Bank Credentials
   .panel-body
     .row
       .col-md-6
@@ -61,6 +71,34 @@
             .col-md-4 Additional Password:
             .col-md-6
               %input#additional_pin{:size => "40", :type => "text"}/
+          %p
+          .row
+            %p
+            .col-md-4
+            .col-md-6
+              %input.btn.btn-warning{:type => "submit", :value => "Submit"}
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Prepare PayPal Account
+  .panel-body
+    .row
+      .col-md-6
+        %form#send_paypal_data{ :method => :post, :action => "/add_paypal" }
+          %input#emailvalue{:type=>:hidden, :name => "email", :value => ""}
+          %input#username{:type=>:hidden, :name => "user", :value => ""}
+
+        %form{ :onsubmit => "encrypt_paypal(); return false;" }
+          .row
+            %p
+            .col-md-4 Email:
+            .col-md-6
+              %input#email{:size => "40", :type => "text" }/
+          .row
+            %p
+            .col-md-4 Name:
+            .col-md-6
+              %input#paypalname{:size => "40", :type => "text" }/
           %p
           .row
             %p

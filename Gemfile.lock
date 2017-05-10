@@ -13,9 +13,9 @@ GIT
 
 GIT
   remote: git://github.com/gorenje/bank_account_import.git
-  revision: 99ac968b7db4bec1881aa7f466c83fda3d85862e
+  revision: 32dd72b072e6e6944cc8a360a90f8bf8a3480984
   specs:
-    bank_account_import (0.0.9)
+    bank_account_import (0.0.10)
       iconv
 
 GIT

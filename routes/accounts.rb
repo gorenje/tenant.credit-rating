@@ -23,6 +23,28 @@ get '/add_account' do
   haml :add_account
 end
 
+post '/add_paypal' do
+  must_be_logged_in
+
+  if params[:email].empty?
+    session[:message] = "Email is not allowed to be empty"
+    redirect "/add_account"
+  end
+
+  user = User.find(session[:user_id])
+  email = params["email"]
+
+  account = user.accounts.where(:iban => email).first ||
+    Account.create(:user           => user,
+                   :iban           => email,
+                   :name           => params[:user],
+                   :owner          => params[:user],
+                   :currency       => 'EUR',
+                   :bank           => Bank.paypal)
+
+  redirect '/accounts'
+end
+
 post '/add_account' do
   must_be_logged_in
 
