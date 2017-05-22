@@ -4,7 +4,7 @@ module BlzSearch
   extend self
 
   def find_bank_name(iban)
-    (b = FigoSupportedBank.get_bank(iban) && b.bank_name) ||
+    FigoSupportedBank.get_bank(iban).try(:bank_name) ||
       scrape_bank_name(iban) || "Unknown Bank"
   end
 
@@ -23,9 +23,7 @@ module BlzSearch
       a.name == 'bankRoutingNumber'
     end.first.value = iban.to_local[:blz]
 
-    page = form.submit
-
-    elem = page.search("tr td[class='center']").
+    elem = form.submit.search("tr td[class='center']").
       select { |a| a.children.text == "\nJa\n"}.first
 
     elem && elem.parent.search("a").children.text.strip

@@ -40,10 +40,13 @@ post '/service/details' do
   must_be_logged_in
 
   return_json do
-    bank = FigoSupportedService.where(:bank_code => params[:servicecode]).first
-
     { :form => haml(:"_figo_bank_form", :layout => false,
-                    :locals => { :bank => bank, :iban => nil })
+                    :locals => {
+                      :bank => FigoSupportedService.
+                                where(:bank_code => params[:servicecode]).
+                                first,
+                      :iban => nil
+                    })
     }
   end
 end
