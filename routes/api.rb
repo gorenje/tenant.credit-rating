@@ -7,7 +7,7 @@ get '/api/account/:filter/:account_id.json' do
 
     get_account.
       cluster_transactions_by_month(params[:filter]).
-      sort_by { |a,_| a.to_i }.
+      sort_by { |month,_| month.to_i }.
       each do |month, details|
 
       xcnt += 1
@@ -45,7 +45,7 @@ get '/api/rating/:eid.json' do
     user = User.find_by_external_id(params[:eid])
     data = [{ "name" => "Rating",  "color" => "green", "data" => [] }]
 
-    xcnt, xlookup,last_rating_history_score  = -1,{},-1
+    xcnt, xlookup, last_rating_history_score  = -1,{},-1
     user.rating_histories.sort_by(&:id).each do |rating|
       xcnt += 1
       xlookup[xcnt] = rating.created_at.to_date

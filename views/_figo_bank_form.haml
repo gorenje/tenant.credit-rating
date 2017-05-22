@@ -1,0 +1,46 @@
+- if bank.nil?
+  .row
+    .col-md-10
+      Unsupported Bank.
+- else
+  .row
+    %p
+    .col-md-4
+      %img{ :src => bank.icon.last["48x48"], :width => 48, :height => 48 }
+    .col-md-6
+      = bank.bank_name
+
+  - unless iban.nil?
+    .row
+      %p
+      .col-md-4
+        BLZ
+      .col-md-6
+        = iban.to_local[:blz]
+
+    .row
+      %p
+      .col-md-4
+        Kontonummer
+      .col-md-6
+        = iban.to_local[:account_number]
+
+  - unless bank.advice.blank?
+    .row
+      %p
+      .col-md-4 Hinweis
+      .col-md-6
+        = bank.advice
+
+  - bank.credentials.each do |creds|
+    .row
+      %p
+      .col-md-4= creds["label"]
+      .col-md-6
+        %input.figo_inputs{:size => "40", :type => creds["masked"] ? "password" : "text", }/
+
+  .row
+    %p
+    .col-md-4
+    .col-md-6
+      %input.btn.btn-warning{:type => "submit", :value => "Submit"}

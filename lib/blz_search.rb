@@ -4,6 +4,11 @@ module BlzSearch
   extend self
 
   def find_bank_name(iban)
+    (b = FigoHelper.get_bank(iban) && b["bank_name"]) ||
+      scrape_bank_name(iban) || "Unknown Bank"
+  end
+
+  def scrape_bank_name(iban)
     return nil unless IBANTools::IBAN.valid?(iban.code)
     return nil if iban.country_code != 'DE'
 
@@ -20,9 +25,10 @@ module BlzSearch
 
     page = form.submit
 
-    page.search("tr td[class='center']").
-      select { |a| a.children.text == "\nJa\n"}.first.parent.
-      search("a").children.text.strip
+    elem = page.search("tr td[class='center']").
+      select { |a| a.children.text == "\nJa\n"}.first
+
+    (elem && elem.parent.search("a").children.text.strip)
   end
 
   private

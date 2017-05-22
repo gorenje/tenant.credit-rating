@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170505092352) do
+ActiveRecord::Schema.define(version: 20170522125449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,24 @@ ActiveRecord::Schema.define(version: 20170505092352) do
 
   add_index "banks", ["figo_bank_id"], name: "index_banks_on_figo_bank_id", using: :btree
   add_index "banks", ["iban_bank_code"], name: "index_banks_on_iban_bank_code", using: :btree
+
+  create_table "figo_supported_banks", force: :cascade do |t|
+    t.string "bank_name"
+    t.string "bank_code"
+    t.text   "advice"
+    t.text   "details_json"
+  end
+
+  add_index "figo_supported_banks", ["bank_code"], name: "index_figo_supported_banks_on_bank_code", using: :btree
+
+  create_table "figo_supported_services", force: :cascade do |t|
+    t.string "name"
+    t.string "bank_code"
+    t.text   "advice"
+    t.text   "details_json"
+  end
+
+  add_index "figo_supported_services", ["bank_code"], name: "index_figo_supported_services_on_bank_code", using: :btree
 
   create_table "rating_histories", force: :cascade do |t|
     t.integer  "score"

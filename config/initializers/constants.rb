@@ -12,3 +12,22 @@ BlzSearchUrls["DE"]="https://www.bundesbank.de/Navigation/DE/Service/Suche_BLZ/E
 BankLoginURLs = {
   "10050000" => "https://www.berliner-sparkasse.de/de/home.html"
 }
+
+FigoDemoBank = {
+  "bank_name" => "Figo DemoBank",
+  'bank_code' => "90090042",
+  "advice" => "Just Enter demo/demo for username/password",
+  "credentials" => [{ "label" => "Username", "masked" => false},
+                    { "label" => "Password", "masked" => true }
+                   ],
+  "icon" => ["https://api.figo.me/assets/images/accounts/default.png",
+     {"120x120"=>"https://api.figo.me/assets/images/accounts/default_120.png",
+      "144x144"=>"https://api.figo.me/assets/images/accounts/default_144.png",
+      "192x192"=>"https://api.figo.me/assets/images/accounts/default_192.png",
+      "256x256"=>"https://api.figo.me/assets/images/accounts/default_256.png",
+      "48x48"  =>"https://api.figo.me/assets/images/accounts/default_48.png",
+      "60x60"  =>"https://api.figo.me/assets/images/accounts/default_60.png",
+      "72x72"  =>"https://api.figo.me/assets/images/accounts/default_72.png",
+      "84x84"  =>"https://api.figo.me/assets/images/accounts/default_84.png",
+      "96x96"  =>"https://api.figo.me/assets/images/accounts/default_96.png"}]
+}

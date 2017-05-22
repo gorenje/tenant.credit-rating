@@ -1,12 +1,23 @@
+- if @message
+  .panel.panel-primary
+    .panel-heading
+      %h3.panel-title Response
+    .panel-body
+      = @message
+
 .panel.panel-primary
   .panel-heading
     %h3.panel-title Account Details
   .panel-body
     - if @accounts.size == 0
       No Account available,
-      %a{ :href => "/add_account" } add account.
+      %a{ :href => "/add_account" } Add Account
+      or
+      %a{ :href => "/add_service" } Add Service
     - else
-      %a{ :href => "/add_account" } Add Account.
+      %a{ :href => "/add_account" } Add Account
+      or
+      %a{ :href => "/add_service" } Add Service
       %hr
       = haml :"_js_tablesorter", :locals => {:tableid => "acctable" }
       %table#acctable.colorit.w-100p.tablesorter
@@ -29,14 +40,4 @@
                 &nbsp;
                 = currency(account.last_known_balance, :unit => account.currency)
               %td
-                .row
-                  .col-md-1
-                    &nbsp;
-                  .col-md-1
-                    %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "format_list_bulleted", :title => "View Transactions", :href => "/transactions/#{account.id}"  }
-                  .col-md-1
-                    %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "graph2", :title => "View Graphs", :href => "/transactions/graph/#{account.id}" }
-                  .col-md-1
-                    %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "backup", :title => "Add Transactions", :href => "/add_transactions/#{account.id}" }
-                  .col-md-1
-                    %a.td-n.mr-5px.brad-100p.bgc-red-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "cross4", :title => "Delete Account", :href => "/account/delete/#{account.id}" }
+                = haml :"_account_actions", :locals => { :account => account }

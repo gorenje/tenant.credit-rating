@@ -2,7 +2,7 @@
 
 .panel.panel-primary
   .panel-heading
-    %h3.panel-title Transactions
+    %h3.panel-title= "Transactions (#{@transactions.count})"
   .panel-body
     = haml :"_js_tablesorter", :locals => {:tableid => "transtable" }
     %table#transtable.colorit.w-100p.tablesorter

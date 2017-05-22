@@ -1,17 +1,12 @@
 {
-  "name" : "Tankmeister",
-  "description": "Show the closest empty cars",
+  "name" : "Deutsche Bonitaet",
+  "description": "Provide a Credit Rating using Bank Account Data",
   "keywords": [
-    "drivenow",
-    "fuelling",
-    "car2go",
-    "tanking",
-    "bonus minutes",
-    "multicity"
+    "fintech",
+    "credit rating"
   ],
-  "website": "https://tankmeister.de",
-  "repository": "https://github.com/gorenje/tankmeister",
-  "logo": "https://tankmeister.de/images/appicon_512x512.png",
+  "website": "https://www.deutsch-bonitaet.de",
+  "repository": "https://github.com/adtekio/deutschebonitaet",
   "env": {
     "RACK_ENV": {
       "description": "Rack environment",

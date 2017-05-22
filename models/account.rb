@@ -20,6 +20,10 @@ class Account < ActiveRecord::Base
     self.creds = self.creds.merge("figo_creds" => val)
   end
 
+  def figo_credentials
+    (self.creds || {})["figo_creds"]
+  end
+
   def iban_valid?
     IBANTools::IBAN.valid?(iban)
   end

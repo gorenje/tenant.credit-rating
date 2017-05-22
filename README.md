@@ -1,3 +1,11 @@
+Credit Rating based on Account data
+===
+
+Sinatra app for handling account data to generate a credit rating.
+
+Prerequistes
+---
+
 Before deploying to Heroku, you need to generate key/IV for the encryption
 of the credentials.
 
@@ -20,3 +28,28 @@ Or using ruby:
     key = OpenSSL::PKey::RSA.generate(2048)
     key.export # private key
     key.public_key.export
+
+Features
+---
+
+  1. Credit Rating History
+  2. Bank Account data import
+  3. Bank Account transaction data automatic import
+  4. Credit Rating Badge
+
+
+Bootstrapping
+---
+
+Need to run the following tasks to initialise the app:
+
+    rake import:figo_supported_stuff
+
+After that, the following tasks should be run regularly:
+
+    rake import:figo_supported_stuff # once a day
+    rake import:from_figo_general # every 10 mins
+    rake import:from_figo_connected # every 10 mins
+
+These takes ensure things are up-to-date and that transactions are
+retrieved as soon as they become available.
