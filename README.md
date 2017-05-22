@@ -37,6 +37,15 @@ Features
   3. Bank Account transaction data automatic import
   4. Credit Rating Badge
 
+Local testing
+---
+
+Generate a ```.env``` file by running:
+
+    bundle exec rake appjson:to_dotenv
+
+This will do it's best to generate test environment including setting
+up the various ciphers and keys.
 
 Bootstrapping
 ---
@@ -50,6 +59,7 @@ After that, the following tasks should be run regularly:
     rake import:figo_supported_stuff # once a day
     rake import:from_figo_general # every 10 mins
     rake import:from_figo_connected # every 10 mins
+    rake ratings:compute # every 10 mins
 
 These takes ensure things are up-to-date and that transactions are
 retrieved as soon as they become available.
