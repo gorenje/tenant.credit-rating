@@ -32,6 +32,7 @@ module ViewHelpers
   end
 
   def format_rating_value(val)
+    return "-" if val.nil?
     val.is_a?(Integer) ? val : "%02.2f" % val
   end
 
