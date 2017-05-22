@@ -4,7 +4,7 @@ module BlzSearch
   extend self
 
   def find_bank_name(iban)
-    (b = FigoHelper.get_bank(iban) && b["bank_name"]) ||
+    (b = FigoSupportedBank.get_bank(iban) && b.bank_name) ||
       scrape_bank_name(iban) || "Unknown Bank"
   end
 
@@ -28,7 +28,7 @@ module BlzSearch
     elem = page.search("tr td[class='center']").
       select { |a| a.children.text == "\nJa\n"}.first
 
-    (elem && elem.parent.search("a").children.text.strip)
+    elem && elem.parent.search("a").children.text.strip
   end
 
   private
