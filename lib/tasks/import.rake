@@ -31,40 +31,21 @@ namespace :import do
       dbacc = Account.where(:iban => acc.iban).first
       next if dbacc.nil?
 
-      dbbank = Bank.where(:figo_bank_id => acc.bank_id).first_or_create
+      dbbank = Bank.where(:figo_bank_id => acc.bank_id).
+        first_or_create.tap do |bnk|
+        bnk.update(:figo_bank_code => acc.bank_code,
+                   :figo_bank_name => acc.bank_name)
+      end
 
-      dbbank.update(:figo_bank_code => acc.bank_code,
-                    :figo_bank_name => acc.bank_name)
-
-      dbacc.update(:owner              => acc.owner,
-                   :name               => acc.name,
-                   :account_type       => acc.type,
-                   :currency           => acc.currency,
-                   :iban               => acc.iban,
-                   :account_number     => acc.account_number,
-                   :icon_url           => acc.icon,
-                   :bank               => dbbank,
-                   :last_known_balance => acc.balance.balance.to_s,
-                   :save_pin           => acc.bank.save_pin,
-                   :sepa_creditor_id   => acc.bank.sepa_creditor_id)
+      dbacc.update_from_figo_account(acc, dbbank)
 
       begin
         puts "Getting transactions for #{dbacc.iban}"
         acc.transactions(dbacc.newest_transaction_id).each do |trans|
-          dbtrans =
-            FigoTransaction.
+          FigoTransaction.
             where( :transaction_id => trans.transaction_id,
-                   :account        => dbacc).first_or_create
-
-          dbtrans.update( :name             => trans.name,
-                          :amount           => trans.amount.to_s,
-                          :currency         => trans.currency,
-                          :booking_date     => trans.booking_date,
-                          :value_date       => trans.value_date,
-                          :booked           => trans.booked,
-                          :purpose          => trans.purpose,
-                          :transaction_type => trans.type,
-                          :booking_text     => trans.booking_text)
+                   :account        => dbacc).
+            first_or_create.update_from_figo_transaction(trans)
         end
       rescue Exception => e
         puts e.message
@@ -85,41 +66,23 @@ namespace :import do
         dbacc = Account.where(:figo_account_id => acc.account_id,
                               :user            => user).first_or_create
 
-        dbbank = Bank.where(:figo_bank_id => acc.bank_id).first_or_create
+        dbbank = Bank.where(:figo_bank_id => acc.bank_id).
+          first_or_create.tap do |bnk|
+          bnk.update(:figo_bank_code => acc.bank_code,
+                     :figo_bank_name => acc.bank_name)
+        end
 
-        dbbank.update(:figo_bank_code => acc.bank_code,
-                      :figo_bank_name => acc.bank_name)
-
-        dbacc.update(:owner              => acc.owner,
-                     :name               => acc.name,
-                     :account_type       => acc.type,
-                     :currency           => acc.currency,
-                     :iban               => acc.iban,
-                     :account_number     => acc.account_number,
-                     :icon_url           => acc.icon,
-                     :bank               => dbbank,
-                     :last_known_balance => acc.balance.balance.to_s,
-                     :save_pin           => acc.bank.save_pin,
-                     :sepa_creditor_id   => acc.bank.sepa_creditor_id)
+        dbacc.update_from_figo_account(acc, dbbank)
 
         begin
           acc.transactions(dbacc.newest_transaction_id).each do |trans|
-            dbtrans =
-              FigoTransaction.
+            FigoTransaction.
               where( :transaction_id => trans.transaction_id,
-                     :account        => dbacc).first_or_create
-
-            dbtrans.update( :name             => trans.name,
-                            :amount           => trans.amount.to_s,
-                            :currency         => trans.currency,
-                            :booking_date     => trans.booking_date,
-                            :value_date       => trans.value_date,
-                            :booked           => trans.booked,
-                            :purpose          => trans.purpose,
-                            :transaction_type => trans.type,
-                            :booking_text     => trans.booking_text)
+                     :account        => dbacc).
+              first_or_create.update_from_figo_transaction(trans)
           end
-        rescue
+        rescue Exception => e
+          puts e.message
         end
       end
     end

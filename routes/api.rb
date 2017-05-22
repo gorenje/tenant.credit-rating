@@ -13,13 +13,16 @@ get '/api/account/:filter/:account_id.json' do
       xcnt += 1
       xlookup[xcnt] = "%s/%s" % [month[4..6], month[0..3]]
 
-      data[0]["data"] << { "x" => xcnt,
+      data[0]["data"] << {
+        "x" => xcnt,
         "y" => details["credit"].map(&:to_f).sum.round(2)
       }
-      data[1]["data"] << { "x" => xcnt,
+      data[1]["data"] << {
+        "x" => xcnt,
         "y" => details["debit"].map(&:to_f).sum.round(2)
       }
-      data[2]["data"] << { "x" => xcnt,
+      data[2]["data"] << {
+        "x" => xcnt,
         "y" => details["all"].map(&:to_f).sum.round(2)
       }
     end

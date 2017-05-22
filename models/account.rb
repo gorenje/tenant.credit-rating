@@ -32,6 +32,20 @@ class Account < ActiveRecord::Base
     IBANTools::IBAN.new(iban)
   end
 
+  def update_from_figo_account(acc, dbbank)
+    update(:owner              => acc.owner,
+           :name               => acc.name,
+           :account_type       => acc.type,
+           :currency           => acc.currency,
+           :iban               => acc.iban,
+           :account_number     => acc.account_number,
+           :icon_url           => acc.icon,
+           :bank               => dbbank,
+           :last_known_balance => acc.balance.balance.to_s,
+           :save_pin           => acc.bank.save_pin,
+           :sepa_creditor_id   => acc.bank.sepa_creditor_id)
+  end
+
   def cluster_transactions_by_month(filter = :all)
     {}.tap do |hsh|
       transactions.filter(filter).

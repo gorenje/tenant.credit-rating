@@ -47,8 +47,21 @@ class Transaction < ActiveRecord::Base
     (purpose =~ /moove/i && name == "DAIMLER AG") ||
       (purpose =~ /DriveNow/i && name == "Billpay GmbH")
   end
+
   def to_f
     amount.to_f
+  end
+
+  def update_from_figo_transaction(trans)
+    update( :name             => trans.name,
+            :amount           => trans.amount.to_s,
+            :currency         => trans.currency,
+            :booking_date     => trans.booking_date,
+            :value_date       => trans.value_date,
+            :booked           => trans.booked,
+            :purpose          => trans.purpose,
+            :transaction_type => trans.type,
+            :booking_text     => trans.booking_text)
   end
 end
 
