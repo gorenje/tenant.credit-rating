@@ -34,7 +34,8 @@ post '/login' do
                              "firstname" => u.name,
                              "lastname"  => ""})
 
-        @message = "Thank You! Confirmation email has been sent."
+        @message = ("Thank You! Confirmation email has been sent." +
+                    "Once you have confirmed your email, you may login.")
       end
     end
     haml :register

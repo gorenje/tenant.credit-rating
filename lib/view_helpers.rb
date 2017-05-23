@@ -14,11 +14,6 @@ module ViewHelpers
     yield.to_json
   end
 
-  def return_json_if_logged_in
-    content_type :json
-    (is_logged_in? ? yield : []).to_json
-  end
-
   def must_be_logged_in
     redirect '/' unless is_logged_in?
   end
@@ -31,6 +26,19 @@ module ViewHelpers
     !!session[:user_id]
   end
 
+  def page_can_be_viewed_while_not_logged_in
+    ['/', '/auth', '/logout', '/aboutus', '/contact', '/login', '/register',
+     '/users/email-confirmation', '/user/emailconfirm'].
+      include?(request.path_info) ||
+      case request.path_info
+      when /^\/api\/rating\/.+[.]json/ then true
+      when /^\/badge\/.+[.]svg/ then true
+      when /^\/rating\/.+/ then true
+      else
+        false
+      end
+  end
+
   def format_rating_value(val)
     return "-" if val.nil?
     val.is_a?(Integer) ? val : "%02.2f" % val
@@ -41,7 +49,7 @@ module ViewHelpers
   end
 
   def path_replace_account_id(new_account)
-    request.path.sub(/#{@account.id}/, "#{new_account.id}")
+    request.path_info.sub(/#{@account.id}/, "#{new_account.id}")
   end
 
   def extract_email_and_salt(encstr)
@@ -76,5 +84,23 @@ module ViewHelpers
   def get_account
     Account.
       where(:user_id => session[:user_id], :id => params[:account_id]).first
+  end
+
+  def generate_fake_rating_history_data
+    xlookup = {}.tap do |hsh|
+      ((Date.today - 17)..Date.today).to_a.each_with_index { |d,i| hsh[i] = d }
+    end
+
+    dataset = 18.times.map { |idx| { "x" => idx, "y" => rand(10)-5 } }
+    yvalues = dataset.map { |a| a["y"] }
+    ymax, ymin = yvalues.max, yvalues.min
+
+    {"data"=>
+      [{"name"  =>"Rating",
+         "color"=>"green",
+         "data" => dataset}],
+      "xlookup" => xlookup,
+      "ymax"    => ymax > 0 ? ymax + (ymax*0.1) : ymax - (ymax*0.1),
+      "ymin"    => ymin > 0 ? ymin - (ymin*0.1) : ymin + (ymin*0.1)}
   end
 end

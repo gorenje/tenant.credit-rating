@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 get '/auth' do
   session[:authenticated] = false
   haml :auth, :layout => false

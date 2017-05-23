@@ -1,13 +1,9 @@
 get '/figo/login' do
-  must_be_logged_in
-
   redirect $figo_connection.
     login_url("qweqwe", "accounts=ro transactions=ro balance=ro user=ro")
 end
 
 get '/callback*' do
-  must_be_logged_in
-
   if params['state'] != "qweqwe"
     raise Exception.new("Bogus redirect, wrong state")
   end

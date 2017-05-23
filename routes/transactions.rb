@@ -1,6 +1,4 @@
 get '/transactions/:account_id' do
-  must_be_logged_in
-
   @account      = get_account
   @transactions = @account.transactions
 
@@ -8,24 +6,18 @@ get '/transactions/:account_id' do
 end
 
 get '/transactions/graph/:account_id' do
-  must_be_logged_in
-
   @account = get_account
 
   haml :transactions_graph
 end
 
 get '/add_transactions/:account_id' do
-  must_be_logged_in
-
   @account = get_account
 
   haml :transactions_upload
 end
 
 post '/add_transactions/:account_id' do
-  must_be_logged_in
-
   key       = OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub(/\\n/, "\n"))
   data      = JSON(JWE.decrypt(params[:creds], key))
   file_data = Base64::decode64(data["filedata"].sub(/^.+base64,/, ''))

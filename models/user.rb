@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   def self.find_by_external_id(eid)
     _,p,l,v = Base64::decode64(eid).split(/\|/)
     v =~ /.{#{p.to_i}}(.{#{l.to_i}})/
-    find($1)
+    find_by_id($1)
   end
 
   def self.find_or_create_user_by_figo(access_token)

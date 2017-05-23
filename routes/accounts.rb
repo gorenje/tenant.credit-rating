@@ -1,6 +1,4 @@
 get '/accounts' do
-  must_be_logged_in
-
   @message = session.delete(:message)
   @accounts = User.find(session[:user_id]).accounts
 
@@ -8,8 +6,6 @@ get '/accounts' do
 end
 
 get '/account/delete/:account_id' do
-  must_be_logged_in
-
   get_account.tap do |acc|
     acc.transactions.delete_all
     acc.delete
@@ -19,15 +15,11 @@ get '/account/delete/:account_id' do
 end
 
 get '/add_account' do
-  must_be_logged_in
-
   @message = session.delete(:message)
   haml :add_account
 end
 
 post '/add_account' do
-  must_be_logged_in
-
   user = User.find(session[:user_id])
   iban = if IBANTools::IBAN.valid?(params[:iban])
            IBANTools::IBAN.new(params[:iban])
@@ -68,16 +60,12 @@ post '/add_account' do
 end
 
 post '/iban/check' do
-  must_be_logged_in
-
   return_json do
     { :r => IBANTools::IBAN.valid?(params[:iban]) }
   end
 end
 
 post '/iban/bankdetails' do
-  must_be_logged_in
-
   return_json do
     iban = IBANTools::IBAN.new(params[:iban])
 

@@ -1,6 +1,4 @@
 get '/profile' do
-  must_be_logged_in
-
   haml :profile
 end
 

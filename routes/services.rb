@@ -1,14 +1,10 @@
 get '/add_service' do
-  must_be_logged_in
-
   @message = session.delete(:message)
 
   haml :add_service
 end
 
 post '/add_service' do
-  must_be_logged_in
-
   service = FigoSupportedService.where(:bank_code => params[:servicecode]).first
   if service.nil?
     session[:message] = "Unknown Service: #{params[:servicecode]}"
@@ -44,8 +40,6 @@ post '/add_service' do
 end
 
 post '/service/details' do
-  must_be_logged_in
-
   return_json do
     { :form => haml(:"_figo_bank_form", :layout => false,
                     :locals => {
