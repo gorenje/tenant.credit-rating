@@ -2,6 +2,17 @@
   .panel-heading
     %h3.panel-title Account Details
   .panel-body
+    .row
+      .col-md-1
+        %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "backward4", :title => "Previous Account", :href => path_replace_account_id(@account.previous_account) }
+      .col-md-4
+      .col-md-2
+        %center
+          %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "home", :title => "All Accounts", :href => "/accounts" }
+      .col-md-4
+      .col-md-1
+        %a.td-n.mr-5px.brad-100p.bgc-green-transparent-30p.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "forward4", :title => "Next Account", :href => path_replace_account_id(@account.next_account) }
+
     %table.colorit.w-100p
       %tr
         %th Owner

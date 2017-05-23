@@ -48,6 +48,18 @@ class Account < ActiveRecord::Base
     end
   end
 
+  def previous_account
+    accs = user.accounts.order(:id)
+    pos = accs.index(self)
+    pos - 1 < 0 ? accs.last : accs[pos-1]
+  end
+
+  def next_account
+    accs = user.accounts.order(:id)
+    pos = accs.index(self)
+    pos + 1 >= accs.size ? accs.first : accs[pos+1]
+  end
+
   def update_from_figo_account(acc, dbbank)
     update(:owner              => acc.owner,
            :name               => acc.name,

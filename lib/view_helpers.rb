@@ -40,6 +40,10 @@ module ViewHelpers
     dt.to_s
   end
 
+  def path_replace_account_id(new_account)
+    request.path.sub(/#{@account.id}/, "#{new_account.id}")
+  end
+
   def extract_email_and_salt(encstr)
     estr = begin
              AdtekioUtilities::Encrypt.decode_from_base64(encstr)

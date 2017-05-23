@@ -2179,6 +2179,7 @@
 [data-icon="drafts"]::before { content: "\e075"; }
 [data-icon="filter_list"]::before { content: "\e076"; }
 [data-icon="flag2"]::before { content: "\e077"; }
+[data-icon="backward4"]::before { content: "\e078"; transform: rotate(-180deg);}
 [data-icon="forward4"]::before { content: "\e078"; }
 [data-icon="gesture"]::before { content: "\e079"; }
 [data-icon="inbox"]::before { content: "\e07a"; }
