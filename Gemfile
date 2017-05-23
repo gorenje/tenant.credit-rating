@@ -38,4 +38,5 @@ group :development do
   gem 'dotenv', :github => 'gorenje/dotenv', :branch => 'squaure_brackets'
   gem 'sass'
   gem 'rerun'
+  gem 'term-ansicolor'
 end
