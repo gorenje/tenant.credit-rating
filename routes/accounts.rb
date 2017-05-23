@@ -50,15 +50,21 @@ post '/add_account' do
                    :currency       => 'EUR',
                    :bank           => Bank.for_iban(iban))
 
-  account.figo_credentials = params[:creds]
+  if params[:creds] == "upload_instead"
+    redirect "/add_transactions/#{account.id}"
+  else
+    account.figo_credentials = params[:creds]
 
+    begin
+      task = account.add_account_to_figo
+    rescue Figo::Error => e
+      session[:message] = "Error Adding #{iban.code}: #{e.message}"
+      redirect "/add_account"
+    end
 
-  credentials = { "type" => "encrypted", "value" => params[:creds] }
-  task = FigoHelper.start_session.
-    add_account("de", credentials, iban.to_local[:blz], iban.code, true)
-
-  session[:message] = task.task_token
-  redirect '/accounts'
+    session[:message] = task.task_token
+    redirect '/accounts'
+  end
 end
 
 post '/iban/check' do

@@ -32,15 +32,21 @@
       .col-md-6
         = bank.advice
 
-  - bank.credentials.each do |creds|
+  %form{ :onsubmit => "encrypt(); return false;" }
+
+    - bank.credentials.each do |creds|
+      .row
+        %p
+        .col-md-4= creds["label"]
+        .col-md-6
+          %input.figo_inputs{:size => "40", :type => creds["masked"] ? "password" : "text", }/
+
     .row
       %p
-      .col-md-4= creds["label"]
-      .col-md-6
-        %input.figo_inputs{:size => "40", :type => creds["masked"] ? "password" : "text", }/
-
-  .row
-    %p
-    .col-md-4
-    .col-md-6
-      %input.btn.btn-warning{:type => "submit", :value => "Submit"}
+      .col-md-4
+      .col-md-2
+        %input.btn.btn-success{:type => "submit", :value => "Submit"}
+      .col-md-2
+        %a{ :href => "javascript:upload_instead();" } No Thanks, I'll Upload
+      .col-md-2
+        %a.btn.btn-warning{ :href => "/accounts" } Cancel

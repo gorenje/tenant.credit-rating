@@ -2,16 +2,18 @@
 
 :javascript
   function encrypt() {
-    var data = [];
-    $('.figo_inputs').each(function(idx,elem) { data.push($(elem).val()) } )
-    data = JSON.stringify(data);
-
     $('#ibanvalue').val($('#iban').val());
 
-    encrypt_data(data, "#{FigoPublicKey}", function(result){
+    encrypt_data(collect_figo_data(), "#{FigoPublicKey}", function(result){
       document.getElementById("enc_token_field").value = result;
       document.getElementById("send_data").submit();
     });
+  }
+
+  function upload_instead() {
+    $('#ibanvalue').val($('#iban').val());
+    $("#enc_token_field").val("upload_instead");
+    $("#send_data").submit();
   }
 
 - if @message
@@ -26,27 +28,26 @@
     %h3.panel-title Prepare Bank Credentials
   .panel-body
     .row
-      .col-md-6
+      .col-md-8
         %form#send_data{ :method => :post, :action => "/add_account" }
           %input#enc_token_field{:type=>:hidden, :name => "creds", :value => ""}
           %input#ibanvalue{:type=>:hidden, :name => "iban", :value => ""}
 
-        %form{ :onsubmit => "encrypt(); return false;" }
-          .row
-            %p
-            .col-md-4 IBAN:
-            .col-md-6
-              %input#iban{:size => "40", :type => "text" }/
-            .col-md-2
-              %span#ibangood.td-n.mr-5px.brad-100p.bgc-green.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "checkmark5"}
-              %span#ibanbad.td-n.mr-5px.brad-100p.bgc-red.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "cross4"}
-              %img#ibanwait.td-n.mr-5px.brad-100p.bgc-orange.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{:src => "/images/loader.svg"}
-          .row
-            %p
-            .col-md-4
-            .col-md-6
-              %span#bankname
-          #bankdetails
+        .row
+          %p
+          .col-md-4
+          .col-md-6
+            %input#iban{:size => "40", :type => "text", :placeholder => "IBAN" }/
+          .col-md-2
+            %span#ibangood.td-n.mr-5px.brad-100p.bgc-green.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "checkmark5"}
+            %span#ibanbad.td-n.mr-5px.brad-100p.bgc-red.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{"data-icon" => "cross4"}
+            %img#ibanwait.td-n.mr-5px.brad-100p.bgc-orange.d-fx.fxai-c.fxjc-c.c-white.w-25px.h-25px.bs-1{:src => "/images/loader.svg"}
+        .row
+          %p
+          .col-md-4
+          .col-md-6
+            %span#bankname
+        #bankdetails
 
 
 :javascript

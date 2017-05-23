@@ -2,16 +2,18 @@
 
 :javascript
   function encrypt() {
-    var data = [];
-    $('.figo_inputs').each(function(idx,elem) { data.push($(elem).val()) } )
-    data = JSON.stringify(data);
-
     $('#srvcode').val($('#servicecode').val());
 
-    encrypt_data(data, "#{FigoPublicKey}", function(result){
+    encrypt_data(collect_figo_data(), "#{FigoPublicKey}", function(result){
       document.getElementById("enc_token_field").value = result;
       document.getElementById("send_data").submit();
     });
+  }
+
+  function upload_instead() {
+    $('#srvcode').val($('#servicecode').val());
+    $("#enc_token_field").val("upload_instead");
+    $("#send_data").submit();
   }
 
 - if @message
@@ -31,21 +33,20 @@
           %input#enc_token_field{:type=>:hidden, :name => "creds", :value => ""}
           %input#srvcode{:type=>:hidden, :name => "servicecode", :value => ""}
 
-        %form{ :onsubmit => "encrypt(); return false;" }
-          .row
-            %p
-            .col-md-4 Service:
-            .col-md-8
-              %select#servicecode
-                %option{ :value => "" } --- Select One ---
-                - FigoSupportedService.all.each do |srv|
-                  %option{ :value => srv.bank_code }= srv.bank_name
-          .row
-            %p
-            .col-md-4
-            .col-md-6
-              %span#bankname
-          #bankdetails
+        .row
+          %p
+          .col-md-4 Service:
+          .col-md-8
+            %select#servicecode
+              %option{ :value => "" } --- Select Service ---
+              - FigoSupportedService.all.each do |srv|
+                %option{ :value => srv.bank_code }= srv.bank_name
+        .row
+          %p
+          .col-md-4
+          .col-md-6
+            %span#bankname
+        #bankdetails
 
 
 :javascript

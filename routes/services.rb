@@ -25,15 +25,22 @@ post '/add_service' do
                    :currency       => 'EUR',
                    :bank           => Bank.for_service(service))
 
-  account.figo_credentials = params[:creds]
+  if params[:creds] == "upload_instead"
+    redirect "/add_transactions/#{account.id}"
+  else
+    account.figo_credentials = params[:creds]
 
+    begin
+      task = account.add_account_to_figo
+    rescue Figo::Error => e
+      session[:message] =
+        "Error Adding Service #{service.bank_code}: #{e.message}"
+      redirect "/add_service"
+    end
 
-  credentials = { "type" => "encrypted", "value" => params[:creds] }
-  task = FigoHelper.start_session.
-    add_account("de", credentials, service.bank_code, nil, true)
-
-  session[:message] = task.task_token
-  redirect '/accounts'
+    session[:message] = task.task_token
+    redirect '/accounts'
+  end
 end
 
 post '/service/details' do

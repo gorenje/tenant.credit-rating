@@ -35,7 +35,11 @@
               %td= account.owner
               %td= account.account_number
               %td= account.bank.figo_bank_name || account.bank.iban_bank_name
-              %td.ws-nw= account.iban_obj.prettify
+              %td.ws-nw
+                - if account.is_service?
+                  = account.iban
+                - else
+                  = account.iban_obj.prettify
               %td.txa-r.ws-nw
                 &nbsp;
                 = currency(account.last_known_balance, :unit => account.currency)

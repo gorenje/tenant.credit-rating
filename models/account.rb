@@ -32,6 +32,22 @@ class Account < ActiveRecord::Base
     IBANTools::IBAN.new(iban)
   end
 
+  def is_service?
+    account_number.blank?
+  end
+
+  def add_account_to_figo
+    credentials = { "type" => "encrypted", "value" => figo_credentials }
+
+    if is_service?
+      FigoHelper.start_session.add_account("de", credentials, iban, nil, true)
+    else
+      FigoHelper.start_session.
+        add_account("de", credentials, iban_obj.to_local[:blz],
+                    iban_obj.code, true)
+    end
+  end
+
   def update_from_figo_account(acc, dbbank)
     update(:owner              => acc.owner,
            :name               => acc.name,
