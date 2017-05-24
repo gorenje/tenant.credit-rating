@@ -7,6 +7,21 @@ get '/register' do
   haml :register
 end
 
+get '/resend/email/:eid' do
+  if user = User.find_by_external_id(params[:eid])
+    Mailer::Client.new.
+      send_confirm_email({"confirm_link" =>
+                           user.generate_email_confirmation_link,
+                           "email"     => user.email,
+                           "firstname" => user.name,
+                           "lastname"  => ""})
+    session[:message] = "Email resent."
+  else
+    session[:message] = "Unknown User"
+  end
+  haml :"email_confirmation"
+end
+
 post '/login' do
   key = OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub(/\\n/,"\n"))
   data = JSON(JWE.decrypt(params[:creds], key))
@@ -14,7 +29,13 @@ post '/login' do
   case data["type"]
   when "register"
     if u = User.where(:email => data["email"].downcase).first
-      session[:message] = "Email already registered"
+      session[:message] = if u.has_confirmed?
+                            "Email already registered, <a href='/login'>"+
+                              "Login</a>."
+                          else
+                            "Email already registered, <a href='/resend/"+
+                              "email/#{u.external_id}'>Resend Email</a>."
+                          end
       @email = data["email"]
       @name = data["name"]
     else

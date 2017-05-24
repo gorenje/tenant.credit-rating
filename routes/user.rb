@@ -13,7 +13,8 @@ post '/profile' do
 end
 
 get '/users/email-confirmation' do
-  params[:r]
+  session[:message] = params[:r]
+  haml :"email_confirmation"
 end
 
 get '/user/emailconfirm' do

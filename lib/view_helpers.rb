@@ -34,6 +34,7 @@ module ViewHelpers
       when /^\/api\/rating\/.+[.]json/ then true
       when /^\/badge\/.+[.]svg/ then true
       when /^\/rating\/.+/ then true
+      when /^\/resend\/email\/.+/ then true
       else
         false
       end
