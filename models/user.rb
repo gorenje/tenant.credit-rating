@@ -56,6 +56,10 @@ class User < ActiveRecord::Base
     Base64::encode64("eid|%03d|%03d|%s" % [p,l,r]).strip
   end
 
+  def gravatar_image
+    "https://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}"
+  end
+
   def figo_session
     figo_access_token.blank? ? nil : Figo::Session.new(figo_access_token)
   end

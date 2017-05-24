@@ -1,1 +1,42 @@
-Nothing here yet.
+= haml :"_js_graph"
+
+= haml :"_response_panel"
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title Your Profile
+  .panel-body
+    %form{ :action => "/profile", :method => :post }
+      .row
+        .col-md-4
+          %img.avatar{ :height => 80, :src => @user.gravatar_image }
+      .row.pt-10px
+        .col-md-12
+          Name
+      .row
+        .col-md-12
+          %input{ :type => :text, :size => 60, :value => @user.name, :name => :username }
+      .row.pt-10px
+        .col-md-12
+          Email
+      .row
+        .col-md-12
+          %input{ :type => :text, :size => 60, :value => @user.email, :disabled => true }
+      .row.pt-10px
+        .col-md-12
+          %input.btn.btn-success{ :type => :submit, :value => "Update" }
+
+.panel.panel-primary
+  .panel-heading
+    %h3.panel-title= "Personal Badge - Current Rating: #{@user.rating.score}"
+  .panel-body
+    Use the copy button to copy the badge and install on your own website.
+    %p
+    = haml :"_badge", :locals => { :user => @user }
+
+= haml :"_graph_panel", :locals => {:title => "Credit Rating History", :id=>"chart1" }
+
+:javascript
+  $(document).ready(function(){
+    graphit('#chart1', "/api/rating/#{@user.external_id}.json");
+  });

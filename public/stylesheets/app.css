@@ -54,3 +54,26 @@ body > .container {
 code {
   font-size: 80%;
 }
+
+.avatar {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-style: none;
+    border-left-style: none;
+    border-right-style: none;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-top-style: none;
+    box-sizing: border-box;
+    color: rgba(255, 255, 255, 0.75);
+    display: block;
+    line-height: 14px;
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+    margin-right: 5px;
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    vertical-align: middle;
+}

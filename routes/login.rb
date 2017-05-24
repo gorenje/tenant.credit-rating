@@ -1,5 +1,4 @@
 get '/login' do
-  @message = session.delete(:message)
   @email = session.delete(:email)
   haml :login
 end
@@ -15,12 +14,12 @@ post '/login' do
   case data["type"]
   when "register"
     if u = User.where(:email => data["email"].downcase).first
-      @message = "Email already registered"
+      session[:message] = "Email already registered"
       @email = data["email"]
       @name = data["name"]
     else
       if data["password1"] != data["password2"]
-        @message = "Passwords did not match"
+        session[:message] = "Passwords did not match"
         @email = data["email"]
         @name = data["name"]
       else
@@ -34,8 +33,9 @@ post '/login' do
                              "firstname" => u.name,
                              "lastname"  => ""})
 
-        @message = ("Thank You! Confirmation email has been sent." +
-                    "Once you have confirmed your email, you may login.")
+        session[:message] = ("Thank You! Confirmation email has been sent." +
+                             "Once you have confirmed your email, you may " +
+                             "login.")
       end
     end
     haml :register
@@ -48,20 +48,20 @@ post '/login' do
           redirect "/"
         else
           @email = data["email"]
-          @message = "Unknown Email or Wrong Password - take your pick"
+          session[:message] = "Unknown Email or Wrong Password - take your pick"
         end
       else
         @email = data["email"]
-        @message = "Email not yet confirmed, check your inbox"
+        session[:message] = "Email not yet confirmed, check your inbox"
       end
     else
       @email = data["email"]
-      @message = "Unknown Email or Wrong Password - take your pick"
+      session[:message] = "Unknown Email or Wrong Password - take your pick"
     end
     haml :login
 
   else
-    @message = "Unknown Interaction With Server"
+    session[:message] = "Unknown Interaction With Server"
     haml :login
   end
 end

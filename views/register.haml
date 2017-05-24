@@ -9,12 +9,7 @@
     });
   }
 
-- if @message
-  .panel.panel-primary
-    .panel-heading
-      %h3.panel-title Response
-    .panel-body
-      = @message
+= haml :"_response_panel"
 
 .panel.panel-primary
   .panel-heading
@@ -25,29 +20,24 @@
         %form#send_data{ :method => :post, :action => "/login" }
           %input#enc_token_field{:type=>:hidden, :name => "creds", :value => "none"}
         %form{ :onsubmit => "encrypt(); return false;" }
-          .row
-            %p
+          .row.pt-10px
             .col-md-4 Name
             .col-md-6
               %input#name{:size => "40", :type => "text", :value => @name||""}/
-          .row
-            %p
+          .row.pt-10px
             .col-md-4 Email
             .col-md-6
               %input#email{:size => "40", :type => "text",:value => @email||""}/
-          .row
-            %p
+          .row.pt-10px
             .col-md-4 Password
             .col-md-6
               %input#pword{:size => "40", :type => "password"}/
-          .row
-            %p
+          .row.pt-10px
             .col-md-4 Repeat Password
             .col-md-6
               %input#pword2{:size => "40", :type => "password"}/
           %p
-          .row
-            %p
+          .row.pt-10px
             .col-md-4
             .col-md-6
               %input.btn.btn-warning{:type => "submit", :value => "Submit"}

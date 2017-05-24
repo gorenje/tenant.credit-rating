@@ -16,12 +16,7 @@
     $("#send_data").submit();
   }
 
-- if @message
-  .panel.panel-primary
-    .panel-heading
-      %h3.panel-title Response
-    .panel-body
-      = @message
+= haml :"_response_panel"
 
 .panel.panel-primary
   .panel-heading
@@ -33,21 +28,18 @@
           %input#enc_token_field{:type=>:hidden, :name => "creds", :value => ""}
           %input#srvcode{:type=>:hidden, :name => "servicecode", :value => ""}
 
-        .row
-          %p
-          .col-md-4 Service:
-          .col-md-8
+        .row.pt-10px
+          .col-md-4
+          .col-md-6
             %select#servicecode
               %option{ :value => "" } --- Select Service ---
               - FigoSupportedService.all.each do |srv|
                 %option{ :value => srv.bank_code }= srv.bank_name
-        .row
-          %p
+        .row.pt-10px
           .col-md-4
           .col-md-6
             %span#bankname
         #bankdetails
-
 
 :javascript
   $(document).ready(function(){

@@ -1,5 +1,15 @@
 get '/profile' do
+  @user = User.find(session[:user_id])
+  @user.compute_rating if @user.rating.nil?
   haml :profile
+end
+
+post '/profile' do
+  session[:message] = "Successfully Updated"
+
+  User.find(session[:user_id]).update(:name => params[:username])
+
+  redirect '/profile'
 end
 
 get '/users/email-confirmation' do

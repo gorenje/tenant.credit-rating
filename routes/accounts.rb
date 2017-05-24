@@ -1,5 +1,4 @@
 get '/accounts' do
-  @message = session.delete(:message)
   @accounts = User.find(session[:user_id]).accounts
 
   haml :accounts
@@ -15,7 +14,6 @@ get '/account/delete/:account_id' do
 end
 
 get '/add_account' do
-  @message = session.delete(:message)
   haml :add_account
 end
 

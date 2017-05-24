@@ -29,15 +29,16 @@
         #navbar.collapse.navbar-collapse
           %ul.nav.navbar-nav
             - if is_logged_in?
+              - user = User.find(session[:user_id])
               - MenuItems.each do |name, path|
                 = haml :"_menu_item", :locals => {:name => name, :path => path}
               %li.dropdown
                 %a.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
-                  %span{ "data-icon" => "user2" }
+                  %img.avatar{ :height => 20, :src => user.gravatar_image }
                 %ul.dropdown-menu
                   %li
                     %a{:href => "/profile" }
-                      %strong= User.find(session[:user_id]).name
+                      %strong= user.name
                   %li
                     %a{:href => "/add_account"} Add Bank Account
                   %li
@@ -57,8 +58,6 @@
                     %a{:href => "/aboutus"} About Us
                   %li
                     %a{:href => "/contact"} Contact Us
-                  %li
-                    %a{:href => "/sitemap"} Sitemap
             - else
               %li
                 %a{:href => "/register"} Register

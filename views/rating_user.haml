@@ -1,23 +1,23 @@
-= haml :"_js_graph"
+- if @user.nil?
+  .panel.panel-primary
+    .panel-heading
+      %h3.panel-title Unbekannter Nutzer
 
-.panel.panel-primary
-  .panel-heading
-    %h3.panel-title Geprüfter Bonität
-  .panel-body
-    .row
-      .col-md-12
-        %img{ :height => "50px", :src => "#{$hosthandler.badge.url}/badge/#{params[:eid]}.svg" }
-    .row
-      .col-md-12
-        - if @user.nil?
-          Rating for the Unknown User
-        - else
-          Rating for
-          = @user.name
+- else
+  = haml :"_js_graph"
 
-= haml :"_graph_panel", :locals => {:title => "Bonitätsverlauf", :id=>"chart1" }
+  .panel.panel-primary
+    .panel-heading
+      %h3.panel-title= "Geprüfter Bonität für #{@user.name}"
+    .panel-body
+      .row
+        .col-md-12
+          %center
+            %span.fw-900.fsz-100px= @user.rating.score
 
-:javascript
-  $(document).ready(function(){
-    graphit('#chart1', "/api/rating/#{params[:eid]}.json");
-  });
+  = haml :"_graph_panel", :locals => {:title => "Bonitätsverlauf", :id=>"chart1" }
+
+  :javascript
+    $(document).ready(function(){
+      graphit('#chart1', "/api/rating/#{params[:eid]}.json");
+    });

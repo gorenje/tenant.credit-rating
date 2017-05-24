@@ -10,12 +10,8 @@
     });
   }
 
-- if @message
-  .panel.panel-primary
-    .panel-heading
-      %h3.panel-title Response
-    .panel-body
-      = @message
+= haml :"_response_panel"
+
 - unless session[:user_id]
   .panel.panel-primary
     .panel-heading
@@ -48,6 +44,7 @@
               .col-md-12
                 Not yet a user?
                 %a{ :href => "/register" } Register!
+
 - else
   .panel.panel-primary
     .panel-heading

@@ -1,6 +1,4 @@
 get '/add_service' do
-  @message = session.delete(:message)
-
   haml :add_service
 end
 

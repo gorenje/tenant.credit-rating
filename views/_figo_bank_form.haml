@@ -1,52 +1,40 @@
 - if bank.nil?
   .row
-    .col-md-10
-      Unsupported Bank.
+    .col-md-12
+      Unsupported Bank or Service.
 - else
-  .row
-    %p
+  .row.pt-10px
     .col-md-4
       %img{ :src => bank.icon.last["48x48"], :width => 48, :height => 48 }
-    .col-md-6
-      = bank.bank_name
+    .col-md-8= bank.bank_name
 
   - unless iban.nil?
-    .row
-      %p
-      .col-md-4
-        BLZ
-      .col-md-6
-        = iban.to_local[:blz]
+    .row.pt-10px
+      .col-md-4 BLZ
+      .col-md-8= iban.to_local[:blz]
 
-    .row
-      %p
-      .col-md-4
-        Kontonummer
-      .col-md-6
-        = iban.to_local[:account_number]
+    .row.pt-10px
+      .col-md-4 Kontonummer
+      .col-md-8= iban.to_local[:account_number]
 
   - unless bank.advice.blank?
-    .row
-      %p
+    .row.pt-10px
       .col-md-4 Hinweis
-      .col-md-6
-        = bank.advice
+      .col-md-8= bank.advice
 
   %form{ :onsubmit => "encrypt(); return false;" }
 
     - bank.credentials.each do |creds|
-      .row
-        %p
+      .row.pt-10px
         .col-md-4= creds["label"]
-        .col-md-6
+        .col-md-8
           %input.figo_inputs{:size => "40", :type => creds["masked"] ? "password" : "text", }/
 
-    .row
-      %p
+    .row.pt-10px
       .col-md-4
       .col-md-2
         %input.btn.btn-success{:type => "submit", :value => "Submit"}
-      .col-md-2
+      .col-md-4
         %a{ :href => "javascript:upload_instead();" } No Thanks, I'll Upload
       .col-md-2
         %a.btn.btn-warning{ :href => "/accounts" } Cancel
