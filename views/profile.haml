@@ -11,14 +11,12 @@
         .col-md-4
           %img.avatar{ :height => 80, :src => @user.gravatar_image }
       .row.pt-10px
-        .col-md-12
-          Name
+        .col-md-12.fw-900 Name
       .row
         .col-md-12
           %input{ :type => :text, :size => 60, :value => @user.name, :name => :username }
       .row.pt-10px
-        .col-md-12
-          Email
+        .col-md-12.fw-900 Email
       .row
         .col-md-12
           %input{ :type => :text, :size => 60, :value => @user.email, :disabled => true }

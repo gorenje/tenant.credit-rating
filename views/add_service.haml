@@ -30,6 +30,7 @@
 
         .row.pt-10px
           .col-md-4
+        .row
           .col-md-6
             %select#servicecode
               %option{ :value => "" } --- Select Service ---
@@ -37,6 +38,7 @@
                 %option{ :value => srv.bank_code }= srv.bank_name
         .row.pt-10px
           .col-md-4
+        .row
           .col-md-6
             %span#bankname
         #bankdetails

@@ -4,14 +4,13 @@ get '/badge' do
 end
 
 get '/badge/:eid.svg' do
+  @clr = "black"
   generate_svg "button" do
-    if user = User.find_by_external_id(params[:eid])
-      user.compute_rating if user.rating.nil?
-      @rating = user.rating.score || 0
-      @clr = @rating > 0 ? "green" : (@rating == 0 ? "orange" : "black")
-    else
-      @rating = "---"
-      @clr = "black"
-    end
+    @rating = if user = User.find_by_external_id(params[:eid])
+                user.compute_rating if user.rating.nil?
+                user.rating.score || 0
+              else
+                "---"
+              end
   end
 end

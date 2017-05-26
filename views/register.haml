@@ -22,22 +22,27 @@
         %form{ :onsubmit => "encrypt(); return false;" }
           .row.pt-10px
             .col-md-4 Name
-            .col-md-6
+          .row
+            .col-md-4
               %input#name{:size => "40", :type => "text", :value => @name||""}/
           .row.pt-10px
             .col-md-4 Email
+          .row
             .col-md-6
               %input#email{:size => "40", :type => "text",:value => @email||""}/
           .row.pt-10px
             .col-md-4 Password
+          .row
             .col-md-6
               %input#pword{:size => "40", :type => "password"}/
           .row.pt-10px
             .col-md-4 Repeat Password
+          .row
             .col-md-6
               %input#pword2{:size => "40", :type => "password"}/
           %p
           .row.pt-10px
             .col-md-4
+          .row
             .col-md-6
               %input.btn.btn-warning{:type => "submit", :value => "Submit"}
