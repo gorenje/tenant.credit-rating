@@ -23,7 +23,7 @@ get '/user/emailconfirm' do
   else
     email, salt = extract_email_and_salt(params[:email])
     if email.blank? or salt.blank?
-      redirect(to_email_confirm("DataCorrupt"))
+      redirect to_email_confirm("DataCorrupt")
     end
 
     user = User.find_by_email(email)
@@ -35,7 +35,7 @@ get '/user/emailconfirm' do
       session[:message] = "Email Confirmed!"
       redirect "/login"
     else
-      redirect(to_email_confirm("TokenMismatch"))
+      redirect to_email_confirm("TokenMismatch")
     end
   end
 end

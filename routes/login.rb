@@ -9,13 +9,18 @@ end
 
 get '/resend/email/:eid' do
   if user = User.find_by_external_id(params[:eid])
-    Mailer::Client.new.
-      send_confirm_email({"confirm_link" =>
-                           user.generate_email_confirmation_link,
-                           "email"     => user.email,
-                           "firstname" => user.name,
-                           "lastname"  => ""})
-    session[:message] = "Email resent."
+    unless user.has_confirmed?
+      Mailer::Client.new.
+        send_confirm_email({"confirm_link" =>
+                             user.generate_email_confirmation_link,
+                             "email"     => user.email,
+                             "firstname" => user.name,
+                             "lastname"  => ""})
+      session[:message] = "Confirmation Email resent."
+    else
+      session[:message] = "Email already confirmed, <a href='/login'>"+
+        "Login</a>."
+    end
   else
     session[:message] = "Unknown User"
   end
