@@ -32,6 +32,10 @@ class Account < ActiveRecord::Base
     IBANTools::IBAN.new(iban)
   end
 
+  def is_figo_connected?
+    !figo_credentials.empty?
+  end
+
   def is_service?
     account_number.blank?
   end

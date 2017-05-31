@@ -59,7 +59,7 @@ class RatingEngine
         when (-10..-1) then [cnt, -1]
         when 0 then [cnt, 3]
         when 1 then [cnt, 1]
-        when 2 then [cnt,0]
+        when 2 then [cnt, 0]
         else [cnt,-3]
         end
       end
@@ -81,6 +81,20 @@ class RatingEngine
         end
       end
     },
+
+    :six => {
+      :name => "Are accounts connected to Figo or uploaded? (Percent)",
+      :desc => "Is account data trustworthy or manually uploaded?",
+      :proc => Proc.new do |engine|
+        case cnt = engine.figo_connected_accounts_ratio
+        when (0..30)  then [cnt, -2]
+        when (30..50) then [cnt, -1]
+        when (50..70) then [cnt, 1]
+        when (70..90) then [cnt, 2]
+        else [cnt,3]
+        end
+      end
+    },
   }
 
 
@@ -96,6 +110,18 @@ class RatingEngine
 
   def total_accounts
     user.accounts.count
+  end
+
+  def figo_connected_accounts_ratio
+    tot = total_accounts
+    return 0 if tot == 0
+
+    c = user.accounts.inject([0,0]) do |counter,acc|
+      acc.is_figo_connected? ? counter[0] += 1 : counter[1] += 1
+      counter
+    end
+
+    ((c[0] / tot.to_f) * 100).to_i
   end
 
   def total_positive_accounts
