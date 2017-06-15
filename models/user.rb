@@ -34,17 +34,21 @@ class User < ActiveRecord::Base
   end
 
   def compute_rating
-    score = RatingEngine.new(self).rating
+    rateng  = RatingEngine.new(self)
+    details = { :details => rateng.tablize_ratings.to_json }
+    score   = rateng.rating
 
     if rating.nil?
-      Rating.create(:user => self, :score => score)
+      Rating.create(:user => self, :score => score, :details => details)
       reload
     end
 
     if rating.score != score || rating_histories.count == 0
       rating_histories <<
-        RatingHistory.create(:user => self, :score => rating.score)
-      rating.update(:score => score)
+        RatingHistory.create(:user    => self,
+                             :score   => rating.score,
+                             :details => rating.details)
+      rating.update(:score => score, :details => details)
     end
   end
 

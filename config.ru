@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# -*- ruby -*-
 require './application.rb'
 
 use Rack::Session::Cookie,
