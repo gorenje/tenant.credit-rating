@@ -1,6 +1,6 @@
 get '/profile' do
   @user = User.find(session[:user_id])
-  @user.compute_rating if @user.rating.nil?
+  @user.update_rating if @user.rating.nil?
   haml :profile
 end
 

@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  def compute_rating
+  def update_rating
     rateng  = RatingEngine.new(self)
     details = { :details => rateng.tablize_ratings.to_json }
     score   = rateng.rating
