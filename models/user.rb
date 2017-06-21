@@ -90,6 +90,23 @@ class User < ActiveRecord::Base
       c["pass_hash"] && Digest::SHA512.hexdigest(val) == c["pass_hash"]
   end
 
+  def create_or_update_figo_account
+    return if self.creds["figo_recovery_password"]
+
+    figo_password = PasswordGenerator.generate_password
+    recovery_password = $figo_connection.
+      create_user(name, email, figo_password)["recovery_password"]
+
+    self.creds = self.creds.
+      merge({"figo_recovery_password" => recovery_password,
+             "figo_password"          => figo_password})
+  end
+
+  def start_figo_session
+    data = $figo_connection.credential_login(email,self.creds["figo_password"])
+    Figo::Session.new(data["access_token"])
+  end
+
   def generate_email_token(more_args = {})
     {}.tap do |p|
       p[:token]         = AdtekioUtilities::Encrypt.generate_token

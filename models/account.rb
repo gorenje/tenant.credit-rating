@@ -24,6 +24,14 @@ class Account < ActiveRecord::Base
     (self.creds || {})["figo_creds"]
   end
 
+  def figo_task_token=(val)
+    self.creds = self.creds.merge("figo_task_token" => val)
+  end
+
+  def figo_task_token
+    (self.creds || {})["figo_task_token"]
+  end
+
   def iban_valid?
     IBANTools::IBAN.valid?(iban)
   end
@@ -44,11 +52,14 @@ class Account < ActiveRecord::Base
     credentials = { "type" => "encrypted", "value" => figo_credentials }
 
     if is_service?
-      FigoHelper.start_session.add_account("de", credentials, iban, nil, true)
+      user.start_figo_session.
+        add_account("de", credentials, iban, nil, true)
     else
-      FigoHelper.start_session.
+      user.start_figo_session.
         add_account("de", credentials, iban_obj.to_local[:blz],
                     iban_obj.code, true)
+    end.tap do |t|
+      self.figo_task_token = t.task_token
     end
   end
 

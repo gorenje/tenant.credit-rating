@@ -35,7 +35,7 @@ GIT
 
 GIT
   remote: git://github.com/gorenje/ruby-figo.git
-  revision: 9d36e8af40920759542b5ef94d584b1413688719
+  revision: 4b81b85cece32ed1127a61bb443d2a6e70e5b138
   specs:
     figo (1.2.6)
       flt
