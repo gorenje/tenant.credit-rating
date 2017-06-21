@@ -26,4 +26,8 @@ class Bank < ActiveRecord::Base
   def login_url
     BankLoginURLs[iban_bank_code]
   end
+
+  def name
+    iban_bank_name || figo_bank_name
+  end
 end

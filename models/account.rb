@@ -63,6 +63,11 @@ class Account < ActiveRecord::Base
     end
   end
 
+  def figo_task
+    user.start_figo_session.
+      get_task_state( OpenStruct.new(:task_token => figo_task_token))
+  end
+
   def previous_account
     accs = user.accounts.order(:id)
     pos = accs.index(self)

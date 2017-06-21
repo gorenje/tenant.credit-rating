@@ -64,10 +64,6 @@ class User < ActiveRecord::Base
     "https://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}"
   end
 
-  def figo_session
-    figo_access_token.blank? ? nil : Figo::Session.new(figo_access_token)
-  end
-
   def login_token=(val)
     self.creds = self.creds.merge("login_token" => val)
   end
@@ -100,6 +96,10 @@ class User < ActiveRecord::Base
     self.creds = self.creds.
       merge({"figo_recovery_password" => recovery_password,
              "figo_password"          => figo_password})
+  end
+
+  def has_figo_account?
+    !!self.creds["figo_password"]
   end
 
   def start_figo_session

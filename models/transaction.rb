@@ -12,6 +12,8 @@ class Transaction < ActiveRecord::Base
         when "electric"   then trans.electric?
         when "salary"     then trans.salary?
         when "carsharing" then trans.carsharing?
+        when "internet"   then trans.internet?
+        when "telephone"  then trans.telephone?
         else true
         end
       end
@@ -46,6 +48,15 @@ class Transaction < ActiveRecord::Base
   def carsharing?
     (purpose =~ /moove/i && name == "DAIMLER AG") ||
       (purpose =~ /DriveNow/i && name == "Billpay GmbH")
+  end
+
+  def telephone?
+    (name =~ /Telefonica/ && purpose =~ /Mobilfunk/) ||
+      (name =~ /Telekom/ && purpose =~ /Mobilfunk/)
+  end
+
+  def internet?
+    name == "1U1 Telecom Gmbh"
   end
 
   def to_f
