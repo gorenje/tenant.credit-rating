@@ -94,9 +94,19 @@ class Account < ActiveRecord::Base
            :sepa_creditor_id   => acc.bank.sepa_creditor_id)
   end
 
-  def cluster_transactions_by_month(filter = :all)
+  def cluster_transactions_by_month(filter = :none)
+    trans = transactions.filter(filter)
+    ary   = trans.map(&:booking_date).sort
+    return {} if ary.empty?
+
     {}.tap do |hsh|
-      transactions.filter(filter).
+      (ary.first..ary.last).
+        map { |a| a.strftime("%Y%m") }.
+        uniq.each do |month|
+        hsh[month] = { "debit" => [], "credit" => [], "all" => [] }
+      end
+    end.tap do |hsh|
+      trans.
         group_by { |tran| tran.booking_date.strftime("%Y%m") }.
         each do |month, transactions|
         hsh[month] = {

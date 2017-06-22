@@ -57,8 +57,7 @@ Need to run the following tasks to initialise the app:
 After that, the following tasks should be run regularly:
 
     rake import:figo_supported_stuff # once a day
-    rake import:from_figo_general # every 10 mins
-    rake import:from_figo_connected # every 10 mins
+    rake import:from_figo # every 10 mins
     rake ratings:compute # every 10 mins
 
 These takes ensure things are up-to-date and that transactions are
