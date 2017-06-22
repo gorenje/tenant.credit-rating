@@ -13,6 +13,11 @@ get '/account/delete/:account_id' do
   redirect '/accounts'
 end
 
+get '/account/refresh/:account_id' do
+  get_account.refresh
+  redirect "/transactions/#{params[:account_id]}"
+end
+
 get '/add_account' do
   haml :add_account
 end

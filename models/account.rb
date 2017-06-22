@@ -64,8 +64,14 @@ class Account < ActiveRecord::Base
   end
 
   def figo_task
+    return nil if figo_task_token.nil?
     user.start_figo_session.
       get_task_state( OpenStruct.new(:task_token => figo_task_token))
+  end
+
+  def refresh
+    return if figo_task.nil? || !user.has_figo_account?
+    user.update_accounts_from_figo
   end
 
   def previous_account
@@ -81,7 +87,7 @@ class Account < ActiveRecord::Base
   end
 
   def update_from_figo_account(acc, dbbank)
-    update(:owner              => acc.owner,
+    update(:owner              => acc.owner || user.name,
            :name               => acc.name,
            :account_type       => acc.type,
            :currency           => acc.currency,

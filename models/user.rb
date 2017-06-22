@@ -80,6 +80,45 @@ class User < ActiveRecord::Base
     self.creds = self.creds.merge("pass_hash" => Digest::SHA512.hexdigest(val))
   end
 
+  def has_figo_account?
+    !!self.creds["figo_password"]
+  end
+
+  def email_confirm_token_matched?(token, slt)
+    confirm_token == AdtekioUtilities::Encrypt.generate_sha512(slt, token)
+  end
+
+  def to_hash
+    JSON.parse(to_json)
+  end
+
+  def update_accounts_from_figo
+    start_figo_session.accounts.each do |acc|
+      puts "   Found #{acc.account_id}"
+      dbacc = Account.where(:figo_account_id => acc.account_id,
+                            :user            => self).first_or_create
+
+      dbbank = Bank.where(:figo_bank_id => acc.bank_id).
+        first_or_create.tap do |bnk|
+        bnk.update(:figo_bank_code => acc.bank_code,
+                   :figo_bank_name => acc.bank_name)
+      end
+
+      dbacc.update_from_figo_account(acc, dbbank)
+
+      begin
+        acc.transactions(dbacc.newest_transaction_id).each do |trans|
+          FigoTransaction.
+            where( :transaction_id => trans.transaction_id,
+                   :account        => dbacc).
+            first_or_create.update_from_figo_transaction(trans)
+        end
+      rescue Exception => e
+        puts e.message
+      end
+    end
+  end
+
   def password_match?(val)
     c = self.creds
     val && c &&
@@ -96,10 +135,6 @@ class User < ActiveRecord::Base
     self.creds = self.creds.
       merge({"figo_recovery_password" => recovery_password,
              "figo_password"          => figo_password})
-  end
-
-  def has_figo_account?
-    !!self.creds["figo_password"]
   end
 
   def start_figo_session
@@ -128,14 +163,6 @@ class User < ActiveRecord::Base
 
     "#{$hosthandler.dashboard.url}/user/emailconfirm?%s" % {
       :email => params[:email], :token => params[:token] }.to_query
-  end
-
-  def email_confirm_token_matched?(token, slt)
-    confirm_token == AdtekioUtilities::Encrypt.generate_sha512(slt, token)
-  end
-
-  def to_hash
-    JSON.parse(to_json)
   end
 
   def last_transaction_date

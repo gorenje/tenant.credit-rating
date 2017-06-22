@@ -27,31 +27,7 @@ namespace :import do
     User.all.each do |user|
       next unless user.has_figo_account?
       puts "Import #{user.name} / #{user.email}"
-
-      user.start_figo_session.accounts.each do |acc|
-        puts "   Found #{acc.account_id}"
-        dbacc = Account.where(:figo_account_id => acc.account_id,
-                              :user            => user).first_or_create
-
-        dbbank = Bank.where(:figo_bank_id => acc.bank_id).
-          first_or_create.tap do |bnk|
-          bnk.update(:figo_bank_code => acc.bank_code,
-                     :figo_bank_name => acc.bank_name)
-        end
-
-        dbacc.update_from_figo_account(acc, dbbank)
-
-        begin
-          acc.transactions(dbacc.newest_transaction_id).each do |trans|
-            FigoTransaction.
-              where( :transaction_id => trans.transaction_id,
-                     :account        => dbacc).
-              first_or_create.update_from_figo_transaction(trans)
-          end
-        rescue Exception => e
-          puts e.message
-        end
-      end
+      user.update_accounts_from_figo
     end
   end
 end

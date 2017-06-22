@@ -22,8 +22,8 @@
             %th Account Number
             %th Bank Code
             %th Iban
-            %th Balance
-            %th Actions
+            %th.txa-r Balance
+            %th.pl-5px Actions
         %tbody
           - @accounts.each do |account|
             %tr
@@ -38,5 +38,5 @@
               %td.txa-r.ws-nw
                 &nbsp;
                 = currency(account.last_known_balance, :unit => account.currency)
-              %td
+              %td.pl-5px
                 = haml :"_account_actions", :locals => { :account => account }
