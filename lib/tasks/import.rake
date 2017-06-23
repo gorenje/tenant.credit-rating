@@ -24,6 +24,7 @@ namespace :import do
     Import account and transaction data for all users.
   EOF
   task :from_figo do
+    Account.all.map(&:figo_task) rescue nil
     User.all.each do |user|
       next unless user.has_figo_account?
       puts "Import #{user.name} / #{user.email}"
