@@ -57,7 +57,8 @@ post '/add_account' do
       redirect "/add_account"
     end
 
-    session[:message] = task.task_token
+    session[:message] = "Your account at #{account.bank.name} will be " +
+      "updated presently"
     redirect '/accounts'
   end
 end

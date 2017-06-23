@@ -70,7 +70,7 @@ class Account < ActiveRecord::Base
   end
 
   def refresh
-    return if figo_task.nil? || !user.has_figo_account?
+    return unless user.has_figo_account?
     user.update_accounts_from_figo
   end
 

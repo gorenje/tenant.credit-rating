@@ -32,7 +32,8 @@ post '/add_service' do
       redirect "/add_service"
     end
 
-    session[:message] = task.task_token
+    session[:message] = "Your Account at #{service.bank_code} "+
+      "will be updated presently"
     redirect '/accounts'
   end
 end
