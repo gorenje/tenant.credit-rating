@@ -8,6 +8,7 @@ namespace :import do
         first_or_create.
         update(:bank_name    => bnk["bank_name"],
                :advice       => bnk["advice"],
+               :bic          => bnk["bic"],
                :details_json => bnk.to_json)
     end
 
