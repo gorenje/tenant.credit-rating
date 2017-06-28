@@ -7,30 +7,36 @@ class User < ActiveRecord::Base
 
   include ModelHelpers::CredentialsHelper
 
+  def self.generate_random_email
+    100.times do
+      email = SecureRandom.hex + "@figo.mieterbonitaet.de"
+      return email if where(:email => email).count == 0
+    end
+  end
+
+  def self.generate_random_id
+    100.times do
+      id = SecureRandom.random_number(2147483647)
+      return id if where(:id => id).count == 0
+    end
+  end
+
+  def self.create_random_new_user
+    create(:id             => generate_random_id,
+           :email          => generate_random_email,
+           :name           => "Random User",
+           :address        => "",
+           :email_verified => true,
+           :language       => "",
+           :join_date      => DateTime.now,
+           :confirm_token  => nil,
+           :has_confirmed => true)
+  end
+
   def self.find_by_external_id(eid)
     _,p,l,v = Base64::decode64(eid).split(/\|/)
     v =~ /.{#{p.to_i}}(.{#{l.to_i}})/
     find_by_id($1)
-  end
-
-  def self.find_or_create_user_by_figo(access_token)
-    return if access_token.nil?
-
-    user = Figo::Session.new(access_token).user
-    if User.where(:email => user.email).count > 0
-      return User.where(:email => user.email).first.tap do |user|
-        user.figo_access_token = access_token
-      end
-    end
-
-    create(:email          => user.email,
-           :name           => user.name,
-           :address        => user.address,
-           :email_verified => user.verified_email,
-           :language       => user.language,
-           :join_date      => user.join_date).tap do |user|
-      user.figo_access_token = access_token
-    end
   end
 
   def update_rating
@@ -58,10 +64,6 @@ class User < ActiveRecord::Base
     r = ("%020d" % rand.to_s.gsub(/^.+[.]/,'').to_i).
       gsub(/(.{#{p}}).{#{l}}(.+)/, "\\1#{id}\\2")
     Base64::encode64("eid|%03d|%03d|%s" % [p,l,r]).strip
-  end
-
-  def gravatar_image
-    "https://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}"
   end
 
   def login_token=(val)

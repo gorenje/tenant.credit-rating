@@ -9,17 +9,6 @@
   .row
     .col-md-8= bank.bank_name
 
-  - unless iban.nil?
-    .row.pt-10px
-      .col-md-4.fw-900 BLZ
-    .row
-      .col-md-8= iban.to_local[:blz]
-
-    .row.pt-10px
-      .col-md-4.fw-900 Kontonummer
-    .row
-      .col-md-8= iban.to_local[:account_number]
-
   - unless bank.advice.blank?
     .row.pt-10px
       .col-md-4.fw-900 Hinweis
@@ -27,7 +16,6 @@
       .col-md-8= bank.advice
 
   %form{ :onsubmit => "encrypt(); return false;" }
-
     - bank.credentials.each do |creds|
       .row.pt-10px
         .col-md-4.fw-900= creds["label"]
@@ -39,8 +27,6 @@
       .col-md-4
     .row
       .col-md-2
-        %input.btn.btn-success{:type => "submit", :value => "Submit"}
-      .col-md-4
-        %a{ :href => "javascript:upload_instead();" } No Thanks, I'll Upload
-      .col-md-2
-        %a.btn.btn-warning{ :href => "/accounts" } Cancel
+        %a.btn.btn-warning{ :href => "/" } Cancel
+      .col-md-2.pl-10px
+        %input.btn.btn-success{:type => "submit", :value => "Weiter"}

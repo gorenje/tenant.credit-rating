@@ -1,71 +1,80 @@
-get '/accounts' do
-  @accounts = User.find(session[:user_id]).accounts
-
-  haml :accounts
-end
-
-get '/account/delete/:account_id' do
-  get_account.tap do |acc|
-    acc.transactions.delete_all
-    acc.delete
-  end
-
-  redirect '/accounts'
-end
-
-get '/account/refresh/:account_id' do
-  get_account.refresh
-  redirect "/transactions/#{params[:account_id]}"
-end
-
-get '/add_account' do
-  haml :add_account
-end
-
 post '/add_account' do
-  user = User.find(session[:user_id])
-  iban = if IBANTools::IBAN.valid?(params[:iban])
-           IBANTools::IBAN.new(params[:iban])
-         else
-           session[:message] = "IBAN: #{params[:iban]} is not valid"
-           redirect "/add_account"
-         end
+  return_json do
+    user = User.find(session[:user_id])
+    iban = if IBANTools::IBAN.valid?(params[:iban])
+             IBANTools::IBAN.new(params[:iban])
+           else
+             { :status => :error,
+               :error => "IBAN: #{params[:iban]} is not valid"
+             }
+           end
 
-  if iban.country_code != "DE"
-    session[:message] = "IBAN: #{params[:iban]} is not a german account"
-    redirect "/add_account"
-  end
+    if iban.country_code != "DE"
+      { :status => :error,
+        :msg => "IBAN: #{params[:iban]} is not a german account"
+      }
+    end
 
-  account = user.accounts.where(:iban => iban.code).first ||
-    Account.create(:user           => user,
-                   :iban           => iban.code,
-                   :name           => user.name,
-                   :owner          => user.name,
-                   :account_number => iban.to_local[:account_number],
-                   :currency       => 'EUR',
-                   :bank           => Bank.for_iban(iban))
+    account = user.accounts.where(:iban => iban.code).first ||
+      Account.create(:user           => user,
+                     :iban           => iban.code,
+                     :name           => user.name,
+                     :owner          => user.name,
+                     :account_number => iban.to_local[:account_number],
+                     :currency       => 'EUR',
+                     :bank           => Bank.for_iban(iban))
 
-  if params[:creds] == "upload_instead"
-    redirect "/add_transactions/#{account.id}"
-  else
     account.figo_credentials = params[:creds]
 
     begin
       task = account.add_account_to_figo
     rescue Figo::Error => e
-      session[:message] = "Error Adding #{iban.code}: #{e.message}"
-      redirect "/add_account"
+      { :status => :error,
+        :msg => "Error Adding #{iban.code}: #{e.message}"
+      }
     end
 
-    session[:message] = "Your account at #{account.bank.name} will be " +
-      "updated presently"
-    redirect '/accounts'
+    { :status     => :ok,
+      :msg        => ("Your account at #{account.bank.name} will be " +
+                      "updated presently"),
+      :account_id => account.id,
+      :token      => task.task_token,
+      :url        => "/accounts/#{account.id}/status/#{task.task_token}"
+    }
+  end
+end
+
+get '/accounts/:accountid/status/:token' do
+  return_json do
+    acc = Account.find(params[:accountid])
+    user = User.find(session[:user_id])
+    return {} if acc.user != user
+
+    if params[:token] == acc.figo_task_token
+      task = acc.figo_task
+      if task.is_ended && !task.is_erroneous
+        acc.refresh
+        user.update_rating
+        { :status => :ready,
+          :rating => user.rating.score
+        }
+      else
+        { :status => :working }
+      end
+    else
+      { :status => :error,
+        :msg => "mismatch"
+      }
+    end
   end
 end
 
 post '/iban/check' do
   return_json do
-    { :r => IBANTools::IBAN.valid?(params[:iban]) }
+    { :r => (IBANTools::IBAN.valid?(params[:iban]) ||
+             params[:iban].length == 8 || # blz
+             params[:iban].length == 11 ) # bic
+    }
   end
 end
 
@@ -75,8 +84,7 @@ post '/iban/bankdetails' do
 
     { :form => haml(:"_figo_bank_form", :layout => false,
                     :locals => {
-                      :bank => FigoSupportedBank.get_bank(iban),
-                      :iban => iban
+                      :bank => FigoSupportedBank.get_bank(iban)
                     })
     }
   end

@@ -10,6 +10,7 @@ require 'zlib'
 require 'stringio'
 require 'haml'
 require 'sinatra/support/numeric'
+require 'prawn'
 
 register Sinatra::Numeric
 

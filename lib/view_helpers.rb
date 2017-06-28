@@ -23,7 +23,8 @@ module ViewHelpers
   end
 
   def is_logged_in?
-    !!session[:user_id]
+    (!!session[:user_id]) ||
+      !!(session[:user_id] = User.create_random_new_user.id)
   end
 
   def page_can_be_viewed_while_not_logged_in
@@ -80,6 +81,11 @@ module ViewHelpers
     content_type "image/svg+xml"
     yield if block_given?
     haml :"images/_#{name}.svg", :layout => false
+  end
+
+  def generate_pdf(name, &block)
+    content_type "application/pdf"
+    yield if block_given?
   end
 
   def get_account
