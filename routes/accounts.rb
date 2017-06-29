@@ -1,46 +1,33 @@
 post '/add_account' do
   return_json do
     user = User.find(session[:user_id])
-    iban = if IBANTools::IBAN.valid?(params[:iban])
-             IBANTools::IBAN.new(params[:iban])
-           else
-             { :status => :error,
-               :error => "IBAN: #{params[:iban]} is not valid"
-             }
-           end
+    iban = IBANTools::IBAN.new(params[:iban])
 
-    if iban.country_code != "DE"
-      { :status => :error,
-        :msg => "IBAN: #{params[:iban]} is not a german account"
-      }
-    end
-
-    account = user.accounts.where(:iban => iban.code).first ||
-      Account.create(:user           => user,
-                     :iban           => iban.code,
-                     :name           => user.name,
-                     :owner          => user.name,
-                     :account_number => iban.to_local[:account_number],
-                     :currency       => 'EUR',
-                     :bank           => Bank.for_iban(iban))
+    account = Account.
+      create(:user     => user,
+             :name     => user.name,
+             :owner    => user.name,
+             :currency => 'EUR',
+             :bank     => Bank.for_figo_bank(FigoSupportedBank.get_bank(iban)))
 
     account.figo_credentials = params[:creds]
 
     begin
+      user.create_or_update_figo_account
       task = account.add_account_to_figo
+      { :status     => :ok,
+        :msg        => ("Your account at #{account.bank.name} will be " +
+                        "updated presently"),
+        :account_id => account.id,
+        :token      => task.task_token,
+        :url        => "/accounts/#{account.id}/status/#{task.task_token}"
+      }
+
     rescue Figo::Error => e
       { :status => :error,
-        :msg => "Error Adding #{iban.code}: #{e.message}"
+        :msg    => e.message
       }
     end
-
-    { :status     => :ok,
-      :msg        => ("Your account at #{account.bank.name} will be " +
-                      "updated presently"),
-      :account_id => account.id,
-      :token      => task.task_token,
-      :url        => "/accounts/#{account.id}/status/#{task.task_token}"
-    }
   end
 end
 

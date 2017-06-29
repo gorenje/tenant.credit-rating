@@ -11,16 +11,10 @@ class Bank < ActiveRecord::Base
                   :iban_bank_name => BlzSearch.find_bank_name(iban))
   end
 
-  def self.for_service(service)
+  def self.for_figo_bank(service)
     Bank.where(:iban_bank_code => service.bank_code).first ||
       Bank.create(:iban_bank_code => service.bank_code,
                   :iban_bank_name => service.bank_name)
-  end
-
-  def self.paypal
-    Bank.where(:iban_bank_code => "paypal").first ||
-      Bank.create(:iban_bank_code => "paypal",
-                  :iban_bank_name => "Paypal")
   end
 
   def login_url

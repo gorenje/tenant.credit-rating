@@ -51,16 +51,10 @@ class Account < ActiveRecord::Base
   def add_account_to_figo
     credentials = { "type" => "encrypted", "value" => figo_credentials }
 
-    if is_service?
-      user.start_figo_session.
-        add_account("de", credentials, iban, nil, true)
-    else
-      user.start_figo_session.
-        add_account("de", credentials, iban_obj.to_local[:blz],
-                    iban_obj.code, true)
-    end.tap do |t|
-      self.figo_task_token = t.task_token
-    end
+    user.start_figo_session.
+      add_account("de", credentials, bank.iban_bank_code, nil, true).tap do |t|
+        self.figo_task_token = t.task_token
+      end
   end
 
   def figo_task
