@@ -4,20 +4,28 @@
   function poll_for_task_update(data){
     $.get(data.url, function(d){
       if ( d.status == "ready" ) {
-        alert(d.rating);
+        $('#transdetails').html("Your Rating: " + d.rating);
+        $('#ibanwait').hide();
       } else {
-        alert(d.status);
+        $('#transdetails').html(d.status);
         setTimeout(poll_for_task_update,5000,data);
       }
     });
   }
 
   function encrypt() {
+    $('#transdetails').html("started");
     $('#ibanvalue').val($('#iban').val());
 
     encrypt_data(collect_figo_data(), "#{FigoPublicKey}", function(result){
       document.getElementById("enc_token_field").value = result;
       var form = $(document.getElementById("send_data"));
+
+      $('#bankdetails').hide();
+      $('#bankname').hide();
+      $('#ibanwait').show();
+      $('#ibangood').hide();
+      $('#ibanbad').hide();
 
       $.ajax({
         url: form.attr('action'),
@@ -25,11 +33,9 @@
         data: form.serialize()
       }).done(function(data){
         if (data.status == "ok") {
-          $('#bankdetails').hide();
-          $('#bankname').hide();
           poll_for_task_update(data);
         } else {
-          alert("failure: " + data.msg);
+          $('#transdetails').html("failure: " + data.msg);
         }
       });
     });
@@ -41,6 +47,9 @@
   .panel-heading
     %h3.panel-title Prepare Bank Credentials
   .panel-body
+    .row
+      #transdetails.col-md-8
+
     .row
       .col-md-8
         %form#send_data{ :method => :post, :action => "/add_account" }

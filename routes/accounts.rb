@@ -65,6 +65,14 @@ post '/iban/check' do
   end
 end
 
+get '/bank/lookup' do
+  return_json do
+    args = [params[:q].upcase + "%"]*3
+    FigoSupportedBank.
+      where("bic like ? or bank_code like ? or bank_name like ?", *args)
+  end
+end
+
 post '/iban/bankdetails' do
   return_json do
     iban = IBANTools::IBAN.new(params[:iban])
