@@ -4,8 +4,6 @@
       %h3.panel-title Unbekannter Nutzer
 
 - else
-  = haml :"_js_graph"
-
   .panel.panel-primary
     .panel-heading
       %h3.panel-title= "Geprüfter Bonität für #{@user.name}"
@@ -15,9 +13,21 @@
           %center
             %span.fw-900.fsz-100px= @user.rating.score
 
-  = haml :"_graph_panel", :locals => {:title => "Bonitätsverlauf", :id=>"chart1" }
-
-  :javascript
-    $(document).ready(function(){
-      graphit('#chart1', "/api/rating/#{params[:eid]}.json");
-    });
+  .panel.panel-primary
+    .panel-heading
+      %h3.panel-title Bonität Begründung
+    .panel-body
+      - if @user.accounts.size == 0
+        No Accounts, No Credit Rating.
+        %a{ :href => "/add_account" } Add An Account.
+      - else
+        - total_score = 0
+        %table.w-100p.colorit
+          %thead
+            %tr
+              %th.txa-l Factor
+              %th.txa-c Value
+              %th.txa-c Score
+          %tbody
+            - @ratings = RatingEngine.new(@user).tablize_ratings
+            = haml :"_rating_factors"

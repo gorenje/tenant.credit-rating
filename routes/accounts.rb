@@ -1,3 +1,7 @@
+get "/" do
+  haml :index
+end
+
 post '/add_account' do
   return_json do
     user = User.find(session[:user_id])
@@ -43,14 +47,15 @@ get '/accounts/:accountid/status/:token' do
         acc.refresh
         user.update_rating
         { :status => :ready,
-          :rating => user.rating.score
+          :rating => user.rating.score,
+          :url    => user.rating_permalink
         }
       else
         { :status => :working }
       end
     else
       { :status => :error,
-        :msg => "mismatch"
+        :msg    => "mismatch"
       }
     end
   end
@@ -67,9 +72,17 @@ end
 
 get '/bank/lookup' do
   return_json do
-    args = [params[:q].upcase + "%"]*3
-    FigoSupportedBank.
-      where("bic like ? or bank_code like ? or bank_name like ?", *args)
+    attrs   = ["bic", "bank_code", "bank_name"]
+    args    = [params[:q].upcase + "%"] * attrs.size
+    qstring = attrs.map{ |a| "#{a} ilike ?" }.join(" or ")
+
+    { :banks => FigoSupportedBank.where(qstring, *args).map do |bank|
+        { :bank => bank,
+          :html => haml(:"_figo_bank_list_element", :layout => false,
+                        :locals => { :bank => bank })
+        }
+      end
+    }
   end
 end
 

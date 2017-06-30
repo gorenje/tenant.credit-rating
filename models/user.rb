@@ -94,6 +94,10 @@ class User < ActiveRecord::Base
     JSON.parse(to_json)
   end
 
+  def rating_permalink
+    [$hosthandler.badge.url, "rating", external_id].join("/")
+  end
+
   def update_accounts_from_figo
     start_figo_session.accounts.each do |acc|
       puts "   Found #{acc.account_id}"

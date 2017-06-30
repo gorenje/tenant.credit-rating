@@ -4,7 +4,8 @@
   function poll_for_task_update(data){
     $.get(data.url, function(d){
       if ( d.status == "ready" ) {
-        $('#transdetails').html("Your Rating: " + d.rating);
+        $('#transdetails').html("<a href='" + d.url + "'>Your Rating: " +
+                                 d.rating + "</a>");
         $('#ibanwait').hide();
       } else {
         $('#transdetails').html(d.status);
@@ -70,14 +71,41 @@
           .col-md-6
             %span#bankname
         #bankdetails
-
+    .row
+      #banklist.col-md-8
 
 :javascript
+  function select_bank(bic){
+    $('#banklist').html("");
+    $('#iban').val(bic);
+    $('#iban').trigger('change');
+  }
+
   $(document).ready(function(){
     $('#ibangood').hide();
     $('#ibanbad').hide();
     $('#ibanwait').hide();
     $('#bankname').parent().parent().hide();
+
+    $('#iban').on('keyup keypress paste', function(){
+      if ( $('#iban').val().length < 2 ) {
+        return;
+      }
+
+      $('#bankdetails').html("");
+
+      $.ajax({
+        url: '/bank/lookup',
+        method: 'get',
+        dataType: 'json',
+        data: { q: $('#iban').val() }
+      }).done(function(data){
+        $('#banklist').html("");
+        $.each(data.banks, function(idx,bank) {
+          $('#banklist').append(bank.html);
+        });
+      });
+    });
 
     $('#iban').on('change', function(){
       $('#ibangood').hide();

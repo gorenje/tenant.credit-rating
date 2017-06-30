@@ -80,6 +80,20 @@ class Account < ActiveRecord::Base
     pos + 1 >= accs.size ? accs.first : accs[pos+1]
   end
 
+  def figo_payment_for(euro_amount)
+    hsh = {
+      :type       => "SEPA transfer",
+      :purpose    => "Mieter Bonitaet Payment",
+      :cents      => false,
+      :amount     => euro_amount,
+      :currency   => "EUR",
+      :name       => "Gerrit Riessen",
+      :iban       => "DE36100500000014402742",
+      :account_id => figo_account_id
+    }
+    Figo::Payment.new(user.start_figo_session, hsh)
+  end
+
   def update_from_figo_account(acc, dbbank)
     update(:owner              => acc.owner || user.name,
            :name               => acc.name,

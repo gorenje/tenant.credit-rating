@@ -81,20 +81,6 @@ class RatingEngine
         end
       end
     },
-
-    :six => {
-      :name => "Are accounts connected to Figo or uploaded? (Percent)",
-      :desc => "Is account data trustworthy or manually uploaded?",
-      :proc => Proc.new do |engine|
-        case cnt = engine.figo_connected_accounts_ratio
-        when (0..30)  then [cnt, -2]
-        when (30..50) then [cnt, -1]
-        when (50..70) then [cnt, 1]
-        when (70..90) then [cnt, 2]
-        else [cnt,3]
-        end
-      end
-    },
   }
 
 
